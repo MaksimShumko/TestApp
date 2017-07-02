@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
             formFragment.setParam(listFragment.getItem(0));
             startFragment(formFragment, R.id.fragmentContainerRight, true, false);
         } else {
-            FormFragment displayFrag = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
-            if (displayFrag != null)
-                stopFragment(displayFrag);
+            FormFragment formFragment = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
+            if (formFragment != null)
+                stopFragment(formFragment);
         }
     }
 
