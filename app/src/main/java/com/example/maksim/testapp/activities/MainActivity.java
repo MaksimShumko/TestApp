@@ -30,9 +30,10 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
         Log.e("MainActivity", "onCreate isLandTablet " + String.valueOf(isLandTablet));
         if (isLandTablet) {
-            FormFragment formFragment = new FormFragment();
+            /*FormFragment formFragment = new FormFragment();
             formFragment.setParam(listFragment.getItem(0));
-            startFragment(formFragment, R.id.fragmentContainerRight, true, false);
+            startFragment(formFragment, R.id.fragmentContainerRight, true, false);*/
+            onItemSelected(listFragment.getItem(0));
         } else {
             FormFragment formFragment = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
             if (formFragment != null)

@@ -3,13 +3,13 @@ package com.example.maksim.testapp.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.fragments.dummy.DummyContent;
@@ -62,18 +62,18 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.e("ListFragment", "onCreateView");
-        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (columnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, columnCount));
-            }
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS, onListFragmentInteractionListener));
+        if (view instanceof ListView) {
+            ListView listView = (ListView) view;
+            String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
+                    "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+                    "Linux", "OS/2" };
+            //ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, values);
+            ListViewAdapter adapter = new ListViewAdapter(getActivity(), R.layout.list_item, DummyContent.ITEMS,
+                    onListFragmentInteractionListener);
+            listView.setAdapter(adapter);
             Log.e("ListFragment", String.valueOf(DummyContent.ITEMS.size()));
         }
         return view;
