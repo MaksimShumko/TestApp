@@ -4,11 +4,10 @@
     android:layout_height="match_parent"
     tools:activity="com.example.maksim.testapp.fragments.FormFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:padding="10dp"/>
 
 </FrameLayout>

@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.fragments.FormFragment;
@@ -14,7 +16,7 @@ import com.example.maksim.testapp.fragments.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
 
-    FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,23 +24,44 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        init();
+    }
+
+    private void init() {
         fragmentManager = getSupportFragmentManager();
 
-        ListFragment listFragment = ListFragment.newInstance(1);
+        ListFragment listFragment = ListFragment.newInstance();
         startFragment(listFragment, R.id.fragmentContainerLeft, true, false);
 
         boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
-        Log.e("MainActivity", "onCreate isLandTablet " + String.valueOf(isLandTablet));
         if (isLandTablet) {
-            /*FormFragment formFragment = new FormFragment();
-            formFragment.setParam(listFragment.getItem(0));
-            startFragment(formFragment, R.id.fragmentContainerRight, true, false);*/
-            onItemSelected(listFragment.getItem(0));
+            showSecondFragment(listFragment);
         } else {
-            FormFragment formFragment = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
-            if (formFragment != null)
-                stopFragment(formFragment);
+            showOnlyFirstFragment();
         }
+    }
+
+    private void showSecondFragment(ListFragment listFragment) {
+        FormFragment formFragment = new FormFragment();
+        formFragment.setParam(listFragment.getItem(0));
+        startFragment(formFragment, R.id.fragmentContainerRight, true, false);
+        onItemSelected(listFragment.getItem(0));
+    }
+
+    private void showOnlyFirstFragment() {
+        setLayoutWeight();
+
+        FormFragment formFragment = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
+        if (formFragment != null)
+            stopFragment(formFragment);
+    }
+
+    private void setLayoutWeight() {
+        FrameLayout frameLayoutLeft = (FrameLayout) findViewById(R.id.fragmentContainerLeft);
+        LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameLayoutLeft.getLayoutParams();
+        param.weight = 1.0f;
+        param.width = LinearLayout.LayoutParams.MATCH_PARENT;
+        frameLayoutLeft.setLayoutParams(param);
     }
 
     private void startFragment(Fragment fragment, int fragmentContainer, boolean replace, boolean addToBackStack) {

@@ -1,6 +1,8 @@
 package com.example.maksim.testapp.fragments;
 
 import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,46 +17,46 @@ import java.util.List;
 
 public class ListViewAdapter extends ArrayAdapter<DummyItem> {
 
-    private final Activity activity;
-    private int resource;
-    private final List<DummyItem> items;
     private final OnListFragmentInteractionListener listener;
 
-    static class ViewHolder {
-        public TextView text1;
-        public TextView text2;
+    private static class ViewHolder {
+        TextView title;
+        TextView description;
     }
 
-    public ListViewAdapter(Activity activity, int resource, List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        super(activity, resource, items);
-        this.activity = activity;
-        this.resource = resource;
-        this.items = items;
+    public ListViewAdapter(Context context, List<DummyItem> items, OnListFragmentInteractionListener listener) {
+        super(context,  R.layout.list_item, items);
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        View rowView = convertView;
-        if (rowView == null) {
-            LayoutInflater inflater = activity.getLayoutInflater();
-            rowView = inflater.inflate(resource, null);
-            ViewHolder viewHolder = new ViewHolder();
-            viewHolder.text1 = (TextView) rowView.findViewById(R.id.listItemText1);
-            viewHolder.text2 = (TextView) rowView.findViewById(R.id.listItemText2);
-            rowView.setTag(viewHolder);
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+        final DummyItem item = getItem(position);
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.list_item, parent, false);
+            viewHolder = new ViewHolder();
+            viewHolder.title = (TextView) convertView.findViewById(R.id.listItemTitle);
+            viewHolder.description = (TextView) convertView.findViewById(R.id.listItemDescription);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        ViewHolder holder = (ViewHolder) rowView.getTag();
-        holder.text1.setText(items.get(position).id);
-        holder.text2.setText(items.get(position).details);
+        if(item != null) {
+            viewHolder.title.setText(item.id);
+            viewHolder.description.setText(item.details);
 
-        rowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onListFragmentInteraction(items.get(position));
-            }
-        });
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onListFragmentInteraction(item);
+                }
+            });
+        }
 
-        return rowView;
+        return convertView;
     }
+
 }
