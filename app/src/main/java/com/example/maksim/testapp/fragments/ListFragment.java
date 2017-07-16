@@ -41,8 +41,8 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.e("ListFragment", "onCreateView");
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
 
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
         if (view instanceof ListView) {
             ListView listView = (ListView) view;
             adapter = new ListViewAdapter(getContext(), presenter);
@@ -62,6 +62,12 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     public void onDetach() {
         Log.e("ListFragment", "onDetach");
         super.onDetach();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).setActionBarTitle("List");
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
+import com.example.maksim.testapp.activities.MainActivity;
 import com.example.maksim.testapp.contracts.ModelFormViewContract;
 import com.example.maksim.testapp.presenters.ModelFormPresenter;
 
@@ -49,6 +50,16 @@ public class FormFragment extends Fragment implements ModelFormViewContract.View
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
+        if(isLandTablet)
+            ((MainActivity) getActivity()).setActionBarTitle("List & form");
+        else
+            ((MainActivity) getActivity()).setActionBarTitle("Form");
     }
 
     public void setPosition(int position) {

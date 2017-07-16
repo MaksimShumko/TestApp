@@ -20,6 +20,7 @@ import com.example.maksim.testapp.fragments.ListFragment;
 public class MainActivity extends AppCompatActivity implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
 
     private FragmentManager fragmentManager;
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +29,11 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         setContentView(R.layout.activity_main);
 
         init();
-
-
     }
 
     private void init() {
         fragmentManager = getSupportFragmentManager();
+        actionBar = getSupportActionBar();
         setFragmentManagerListener();
 
         ListFragment listFragment = ListFragment.newInstance();
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
             @Override
             public void onBackStackChanged() {
                 int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-                ActionBar actionBar = getSupportActionBar();
                 if(actionBar != null) {
                     if (backStackCount > 0) {
                         actionBar.setHomeButtonEnabled(true);
@@ -106,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
                     }
                 }
             }
-
         });
     }
 
@@ -146,5 +144,11 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void setActionBarTitle(String title) {
+        Log.e("MainActivity", "setActionBarTitle " + title);
+        if(actionBar != null)
+            actionBar.setTitle(title);
     }
 }
