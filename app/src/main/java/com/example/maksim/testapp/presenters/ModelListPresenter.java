@@ -37,7 +37,8 @@ public class ModelListPresenter implements ModelListViewContract.Actions,
     @Override
     public void onItemClick(int position) {
         Log.e(LOG_TAG, "OnItemClick");
-        view.onItemClick(repository.getModel(position));
+        if(view != null)
+            view.onItemClick(position);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class ModelListViewContract {
 
     public interface View {
         void notifyDataSetChanged();
-        void onItemClick(Model model);
+        void onItemClick(int position);
     }
 
     public interface Actions {
@@ -29,13 +29,13 @@ public class ModelListViewContract {
     }
 
     public interface ListItem {
-        public String getTitle(int position);
-        public String getDescription(int position);
-        public int getCount();
+        String getTitle(int position);
+        String getDescription(int position);
+        int getCount();
     }
 
     public interface Model {
-        public String getTitle();
-        public String getDescription();
+        String getTitle();
+        String getDescription();
     }
 }

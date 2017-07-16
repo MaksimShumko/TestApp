@@ -13,6 +13,10 @@ public class Repository implements ModelListViewContract.Repository{
     private List<ModelListViewContract.Model> models;
 
     public Repository() {
+        init();
+    }
+
+    private void init() {
         models = new ArrayList<>();
         for(int i = 0; i < 100; i++) {
             final String title = "Title " + String.valueOf(i);

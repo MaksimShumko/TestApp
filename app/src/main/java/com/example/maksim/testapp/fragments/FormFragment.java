@@ -9,24 +9,26 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.contracts.ModelListViewContract;
+import com.example.maksim.testapp.contracts.ModelFormViewContract;
+import com.example.maksim.testapp.presenters.ModelFormPresenter;
 
-public class FormFragment extends Fragment {
-
+public class FormFragment extends Fragment implements ModelFormViewContract.View {
     private TextView textView;
-    private ModelListViewContract.Model item;
+    private ModelFormViewContract.Actions presenter;
+    private int position;
 
     public FormFragment() {
         // Required empty public constructor
     }
 
-    public static FormFragment newInstance(String param1, String param2) {
+    public static FormFragment newInstance() {
         return new FormFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new ModelFormPresenter(this);
     }
 
     @Override
@@ -34,8 +36,8 @@ public class FormFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_form, container, false);
         textView = (TextView) view.findViewById(R.id.textView);
-        if(item != null)
-            textView.setText(item.getTitle() + " " + item.getDescription());
+        if(presenter != null)
+            textView.setText(presenter.getTitle(position) + " " + presenter.getDescription(position));
         return view;
     }
 
@@ -49,7 +51,12 @@ public class FormFragment extends Fragment {
         super.onDetach();
     }
 
-    public void setParam(ModelListViewContract.Model item) {
-        this.item = item;
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
     }
 }

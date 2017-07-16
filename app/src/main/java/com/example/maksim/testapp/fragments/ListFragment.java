@@ -71,12 +71,12 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     }
 
     @Override
-    public void onItemClick(ModelListViewContract.Model model) {
+    public void onItemClick(int position) {
         MainActivity activity = (MainActivity) getActivity();
-        activity.onListFragmentInteraction(model);
+        activity.onListFragmentInteraction(position);
     }
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(ModelListViewContract.Model item);
+        void onListFragmentInteraction(int position);
     }
 }

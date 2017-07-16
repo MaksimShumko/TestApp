@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.contracts.ModelListViewContract;
 import com.example.maksim.testapp.fragments.FormFragment;
 import com.example.maksim.testapp.fragments.ListFragment;
 
@@ -35,17 +34,15 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
 
         boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
         if (isLandTablet) {
-            showSecondFragment(listFragment);
+            showSecondFragment();
         } else {
             showOnlyFirstFragment();
         }
     }
 
-    private void showSecondFragment(ListFragment listFragment) {
-        FormFragment formFragment = new FormFragment();
-        //formFragment.setParam(listFragment.getItem(0));
+    private void showSecondFragment() {
+        FormFragment formFragment = FormFragment.newInstance();
         startFragment(formFragment, R.id.fragmentContainerRight, true, false);
-        //onItemSelected(listFragment.getItem(0));
     }
 
     private void showOnlyFirstFragment() {
@@ -87,14 +84,14 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
     }
 
     @Override
-    public void onListFragmentInteraction(ModelListViewContract.Model item) {
+    public void onListFragmentInteraction(int position) {
         Log.e("MainActivity", "onListFragmentInteraction");
-        onItemSelected(item);
+        onItemSelected(position);
     }
 
-    private void onItemSelected(ModelListViewContract.Model item) {
-        FormFragment formFragment = new FormFragment();
-        formFragment.setParam(item);
+    private void onItemSelected(int position) {
+        FormFragment formFragment = FormFragment.newInstance();
+        formFragment.setPosition(position);
 
         boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
         if (!isLandTablet) {
