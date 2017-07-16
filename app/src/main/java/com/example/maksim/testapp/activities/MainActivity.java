@@ -10,9 +10,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.example.maksim.testapp.R;
+import com.example.maksim.testapp.contracts.ModelListViewContract;
 import com.example.maksim.testapp.fragments.FormFragment;
 import com.example.maksim.testapp.fragments.ListFragment;
-import com.example.maksim.testapp.fragments.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
 
@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
 
     private void showSecondFragment(ListFragment listFragment) {
         FormFragment formFragment = new FormFragment();
-        formFragment.setParam(listFragment.getItem(0));
+        //formFragment.setParam(listFragment.getItem(0));
         startFragment(formFragment, R.id.fragmentContainerRight, true, false);
-        onItemSelected(listFragment.getItem(0));
+        //onItemSelected(listFragment.getItem(0));
     }
 
     private void showOnlyFirstFragment() {
@@ -87,12 +87,12 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(ModelListViewContract.Model item) {
         Log.e("MainActivity", "onListFragmentInteraction");
         onItemSelected(item);
     }
 
-    private void onItemSelected(DummyContent.DummyItem item) {
+    private void onItemSelected(ModelListViewContract.Model item) {
         FormFragment formFragment = new FormFragment();
         formFragment.setParam(item);
 

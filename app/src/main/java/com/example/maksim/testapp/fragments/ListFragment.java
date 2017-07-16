@@ -7,23 +7,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.fragments.dummy.DummyContent;
-import com.example.maksim.testapp.fragments.dummy.DummyContent.DummyItem;
+import com.example.maksim.testapp.activities.MainActivity;
+import com.example.maksim.testapp.contracts.ModelListViewContract;
+import com.example.maksim.testapp.presenters.ModelListPresenter;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
-public class ListFragment extends Fragment {
+import java.util.List;
 
-    private OnListFragmentInteractionListener onListFragmentInteractionListener;
+
+public class ListFragment extends Fragment implements ModelListViewContract.View {
+
+    private ModelListPresenter presenter;
+    private ListViewAdapter adapter;
 
     public ListFragment() {
         Log.e("ListFragment", "ListFragment");
@@ -38,6 +35,7 @@ public class ListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         Log.e("ListFragment", "onCreate");
         super.onCreate(savedInstanceState);
+        presenter = new ModelListPresenter(this);
     }
 
     @Override
@@ -48,40 +46,37 @@ public class ListFragment extends Fragment {
 
         if (view instanceof ListView) {
             ListView listView = (ListView) view;
-
-            ListViewAdapter adapter = new ListViewAdapter(getContext(), DummyContent.ITEMS,
-                    onListFragmentInteractionListener);
+            adapter = new ListViewAdapter(getContext(), presenter);
+            adapter.setOnItemClickListener(presenter);
             listView.setAdapter(adapter);
-
         }
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
         Log.e("ListFragment", "onAttach");
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            onListFragmentInteractionListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         Log.e("ListFragment", "onDetach");
         super.onDetach();
-        onListFragmentInteractionListener = null;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClick(ModelListViewContract.Model model) {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.onListFragmentInteraction(model);
     }
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(DummyItem item);
-    }
-
-    public DummyItem getItem(int itemNum) {
-        return DummyContent.ITEMS.get(itemNum);
+        void onListFragmentInteraction(ModelListViewContract.Model item);
     }
 }
