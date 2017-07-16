@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.fragments;
+package com.example.maksim.testapp.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

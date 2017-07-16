@@ -3,9 +3,13 @@ package com.example.maksim.testapp.activities;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -24,10 +28,13 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         setContentView(R.layout.activity_main);
 
         init();
+
+
     }
 
     private void init() {
         fragmentManager = getSupportFragmentManager();
+        setFragmentManagerListener();
 
         ListFragment listFragment = ListFragment.newInstance();
         startFragment(listFragment, R.id.fragmentContainerLeft, true, false);
@@ -36,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         if (isLandTablet) {
             showSecondFragment();
         } else {
-            showOnlyFirstFragment();
+            stopFragmentIfExist();
         }
     }
 
@@ -45,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         startFragment(formFragment, R.id.fragmentContainerRight, true, false);
     }
 
-    private void showOnlyFirstFragment() {
+    private void stopFragmentIfExist() {
         setLayoutWeight();
 
         FormFragment formFragment = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
@@ -83,6 +90,26 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         transaction.commitAllowingStateLoss();
     }
 
+    private void setFragmentManagerListener() {
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+                ActionBar actionBar = getSupportActionBar();
+                if(actionBar != null) {
+                    if (backStackCount > 0) {
+                        actionBar.setHomeButtonEnabled(true);
+                        actionBar.setDisplayHomeAsUpEnabled(true);
+                    } else {
+                        actionBar.setDisplayHomeAsUpEnabled(false);
+                        actionBar.setHomeButtonEnabled(false);
+                    }
+                }
+            }
+
+        });
+    }
+
     @Override
     public void onListFragmentInteraction(int position) {
         Log.e("MainActivity", "onListFragmentInteraction");
@@ -98,6 +125,26 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
             startFragment(formFragment, R.id.fragmentContainerLeft, true, true);
         } else {
             startFragment(formFragment, R.id.fragmentContainerRight, true, false);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (fragmentManager.getBackStackEntryCount() > 0) {
+                    fragmentManager.popBackStack();
+                }
+            case R.id.menu_go_back:
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

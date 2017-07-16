@@ -11,10 +11,9 @@ import android.widget.ListView;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.activities.MainActivity;
+import com.example.maksim.testapp.adapters.ListViewAdapter;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
 import com.example.maksim.testapp.presenters.ModelListPresenter;
-
-import java.util.List;
 
 
 public class ListFragment extends Fragment implements ModelListViewContract.View {
