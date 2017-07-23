@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public class Repository implements ModelListViewContract.Repository{
-    private List<ModelListViewContract.Model> models;
+    private List<Model> models;
 
     public Repository() {
         init();
@@ -19,43 +19,33 @@ public class Repository implements ModelListViewContract.Repository{
     private void init() {
         models = new ArrayList<>();
         for(int i = 0; i < 100; i++) {
-            final String title = "Title " + String.valueOf(i);
-            final String description = "Description " + String.valueOf(i);;
-            models.add(new ModelListViewContract.Model() {
-                @Override
-                public String getTitle() {
-                    return title;
-                }
-
-                @Override
-                public String getDescription() {
-                    return description;
-                }
-            });
+            String title = "Title " + String.valueOf(i);
+            String description = "Description " + String.valueOf(i);;
+            models.add(new Model(title, description));
         }
     }
 
     @Override
-    public ModelListViewContract.Model getModel(int position) {
+    public Model getModel(int position) {
         if(models != null)
             return models.get(position);
         return null;
     }
 
     @Override
-    public void addModel(ModelListViewContract.Model object) {
+    public void addModel(Model object) {
         if(models == null)
             models = new ArrayList<>();
         models.add(object);
     }
 
     @Override
-    public boolean deleteModel(ModelListViewContract.Model object) {
+    public boolean deleteModel(Model object) {
         return models != null && models.remove(object);
     }
 
     @Override
-    public List<ModelListViewContract.Model> getAllModels() {
+    public List<Model> getAllModels() {
         return models;
     }
 

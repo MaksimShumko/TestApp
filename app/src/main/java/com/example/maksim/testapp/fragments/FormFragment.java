@@ -11,15 +11,17 @@ import android.widget.TextView;
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.activities.MainActivity;
 import com.example.maksim.testapp.contracts.ModelFormViewContract;
+import com.example.maksim.testapp.models.Model;
 import com.example.maksim.testapp.presenters.ModelFormPresenter;
 
 public class FormFragment extends Fragment implements ModelFormViewContract.View {
     private TextView textView;
-    private ModelFormViewContract.Actions presenter;
-    private int position;
+    private Model model;
+    private ModelFormViewContract.Presenter presenter;
 
     public FormFragment() {
         // Required empty public constructor
+        presenter = new ModelFormPresenter(this);
     }
 
     public static FormFragment newInstance() {
@@ -29,7 +31,11 @@ public class FormFragment extends Fragment implements ModelFormViewContract.View
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new ModelFormPresenter(this);
+        Bundle bundle = getArguments();
+        if(bundle != null)
+            model = bundle.getParcelable("model");
+        else
+            model = presenter.getModel(0);
     }
 
     @Override
@@ -37,8 +43,8 @@ public class FormFragment extends Fragment implements ModelFormViewContract.View
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_form, container, false);
         textView = (TextView) view.findViewById(R.id.textView);
-        if(presenter != null)
-            textView.setText(presenter.getTitle(position) + " " + presenter.getDescription(position));
+        if(model != null)
+            textView.setText(model.getTitle() + " " + model.getDescription());
         return view;
     }
 
@@ -55,21 +61,15 @@ public class FormFragment extends Fragment implements ModelFormViewContract.View
     @Override
     public void onResume() {
         super.onResume();
-        boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
+        /*boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
         if(isLandTablet)
             ((MainActivity) getActivity()).setActionBarTitle("List & form");
         else
-            ((MainActivity) getActivity()).setActionBarTitle("Form");
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
+            ((MainActivity) getActivity()).setActionBarTitle("Form");*/
     }
 
     @Override
     public void onItemClick(int position) {
 
     }
-
-
 }

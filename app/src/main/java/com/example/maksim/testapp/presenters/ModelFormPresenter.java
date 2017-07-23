@@ -2,13 +2,14 @@ package com.example.maksim.testapp.presenters;
 
 import com.example.maksim.testapp.contracts.ModelFormViewContract;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
+import com.example.maksim.testapp.models.Model;
 import com.example.maksim.testapp.models.Repository;
 
 /**
  * Created by Maksim on 2017-07-16.
  */
 
-public class ModelFormPresenter implements ModelFormViewContract.Actions {
+public class ModelFormPresenter implements ModelFormViewContract.Presenter {
     private ModelFormViewContract.View view;
     private ModelListViewContract.Repository repository;
 
@@ -18,17 +19,10 @@ public class ModelFormPresenter implements ModelFormViewContract.Actions {
     }
 
     @Override
-    public String getTitle(int position) {
-        if(repository != null && repository.getModel(position) != null)
-            return repository.getModel(position).getTitle();
-        return "Empty title";
-    }
-
-    @Override
-    public String getDescription(int position) {
-        if(repository != null && repository.getModel(position) != null)
-            return repository.getModel(position).getDescription();
-        return "Empty description";
+    public Model getModel(int position) {
+        if(repository != null)
+            return repository.getModel(position);
+        return null;
     }
 
     @Override

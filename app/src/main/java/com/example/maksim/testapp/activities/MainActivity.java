@@ -10,12 +10,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.fragments.FormFragment;
 import com.example.maksim.testapp.fragments.ListFragment;
+import com.example.maksim.testapp.models.Model;
 
 public class MainActivity extends AppCompatActivity implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
 
@@ -28,16 +30,23 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        init();
+
+        fragmentManager = getSupportFragmentManager();
+        if(savedInstanceState == null)
+            init();
     }
 
     private void init() {
-        fragmentManager = getSupportFragmentManager();
         actionBar = getSupportActionBar();
         setFragmentManagerListener();
 
-        ListFragment listFragment = ListFragment.newInstance();
-        startFragment(listFragment, R.id.fragmentContainerLeft, true, false);
+        ListFragment listFragment = null;
+        if(fragmentManager.findFragmentById(R.id.fragmentContainerLeft) instanceof ListFragment)
+            listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.fragmentContainerLeft);
+        if(listFragment == null) {
+            listFragment = ListFragment.newInstance();
+            startFragment(listFragment, R.id.fragmentContainerLeft, true, false);
+        }
 
         boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
         if (isLandTablet) {
@@ -48,39 +57,41 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
     }
 
     private void showSecondFragment() {
-        FormFragment formFragment = FormFragment.newInstance();
-        startFragment(formFragment, R.id.fragmentContainerRight, true, false);
+        FormFragment formFragment = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
+        if(formFragment == null) {
+            formFragment = FormFragment.newInstance();
+            startFragment(formFragment, R.id.fragmentContainerRight, true, false);
+        }
     }
 
     private void stopFragmentIfExist() {
-        setLayoutWeight();
+        //setLayoutWeight();
 
         FormFragment formFragment = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
-        if (formFragment != null)
-            stopFragment(formFragment);
+        if (formFragment != null) {
+            FrameLayout frameLayout = (FrameLayout) findViewById(R.id.fragmentContainerRight);
+            frameLayout.setVisibility(View.GONE);
+        }
+            //stopFragment(formFragment);
     }
 
     private void setLayoutWeight() {
-        FrameLayout frameLayoutLeft = (FrameLayout) findViewById(R.id.fragmentContainerLeft);
-        LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameLayoutLeft.getLayoutParams();
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.fragmentContainerLeft);
+        LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameLayout.getLayoutParams();
         param.weight = 1.0f;
         param.width = LinearLayout.LayoutParams.MATCH_PARENT;
-        frameLayoutLeft.setLayoutParams(param);
+        frameLayout.setLayoutParams(param);
     }
 
     private void startFragment(Fragment fragment, int fragmentContainer, boolean replace, boolean addToBackStack) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if (replace) {
-            if (addToBackStack)
-                transaction.replace(fragmentContainer, fragment).addToBackStack(null);
-            else
-                transaction.replace(fragmentContainer, fragment);
+            transaction = transaction.replace(fragmentContainer, fragment);
         } else {
-            if (addToBackStack)
-                transaction.add(fragmentContainer, fragment).addToBackStack(null);
-            else
-                transaction.add(fragmentContainer, fragment);
+            transaction = transaction.add(fragmentContainer, fragment);
         }
+        if(addToBackStack)
+            transaction.addToBackStack(null);
         transaction.commitAllowingStateLoss();
     }
 
@@ -96,27 +107,25 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
             public void onBackStackChanged() {
                 int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
                 if(actionBar != null) {
-                    if (backStackCount > 0) {
-                        actionBar.setHomeButtonEnabled(true);
-                        actionBar.setDisplayHomeAsUpEnabled(true);
-                    } else {
-                        actionBar.setDisplayHomeAsUpEnabled(false);
-                        actionBar.setHomeButtonEnabled(false);
-                    }
+                    boolean enableBackButton = backStackCount > 0;
+                    actionBar.setHomeButtonEnabled(enableBackButton);
+                    actionBar.setDisplayHomeAsUpEnabled(enableBackButton);
                 }
             }
         });
     }
 
     @Override
-    public void onListFragmentInteraction(int position) {
+    public void onListFragmentInteraction(Model model) {
         Log.e("MainActivity", "onListFragmentInteraction");
-        onItemSelected(position);
+        onItemSelected(model);
     }
 
-    private void onItemSelected(int position) {
+    private void onItemSelected(Model model) {
         FormFragment formFragment = FormFragment.newInstance();
-        formFragment.setPosition(position);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("model", model);
+        formFragment.setArguments(bundle);
 
         boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
         if (!isLandTablet) {

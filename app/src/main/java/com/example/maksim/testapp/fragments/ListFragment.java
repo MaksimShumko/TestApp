@@ -3,23 +3,30 @@ package com.example.maksim.testapp.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.activities.MainActivity;
-import com.example.maksim.testapp.adapters.ListViewAdapter;
+import com.example.maksim.testapp.adapters.RecyclerViewAdapter;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
+import com.example.maksim.testapp.models.Model;
 import com.example.maksim.testapp.presenters.ModelListPresenter;
+
+import java.util.List;
 
 
 public class ListFragment extends Fragment implements ModelListViewContract.View {
 
-    private ModelListPresenter presenter;
-    private ListViewAdapter adapter;
+    private ModelListViewContract.Presenter presenter;
+    private RecyclerViewAdapter adapter;
+    private OnListFragmentInteractionListener onListFragmentInteractionListener;
 
     public ListFragment() {
         Log.e("ListFragment", "ListFragment");
@@ -43,12 +50,13 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
         Log.e("ListFragment", "onCreateView");
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        if (view instanceof ListView) {
-            ListView listView = (ListView) view;
-            adapter = new ListViewAdapter(getContext(), presenter);
-            adapter.setOnItemClickListener(presenter);
-            listView.setAdapter(adapter);
-        }
+        RecyclerView recyclerView = (RecyclerView) view;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        adapter = new RecyclerViewAdapter(getContext(), presenter.getAllModels());
+        adapter.setOnItemClickListener(presenter);
+        recyclerView.setAdapter(adapter);
+        notifyDataSetChanged();
         return view;
     }
 
@@ -56,6 +64,11 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     public void onAttach(Context context) {
         Log.e("ListFragment", "onAttach");
         super.onAttach(context);
+        try {
+            onListFragmentInteractionListener = (OnListFragmentInteractionListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString() + " must implement OnListFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -71,17 +84,21 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     }
 
     @Override
+    public void showView(List<Model> elements) {
+
+    }
+
+    @Override
     public void notifyDataSetChanged() {
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onItemClick(int position) {
-        MainActivity activity = (MainActivity) getActivity();
-        activity.onListFragmentInteraction(position);
+    public void onItemClick(Model model) {
+        onListFragmentInteractionListener.onListFragmentInteraction(model);
     }
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(int position);
+        void onListFragmentInteraction(Model model);
     }
 }

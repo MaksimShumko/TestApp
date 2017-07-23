@@ -1,5 +1,7 @@
 package com.example.maksim.testapp.contracts;
 
+import com.example.maksim.testapp.models.Model;
+
 import java.util.List;
 
 /**
@@ -11,9 +13,8 @@ public class ModelFormViewContract {
         void onItemClick(int position);
     }
 
-    public interface Actions {
-        String getTitle(int position);
-        String getDescription(int position);
+    public interface Presenter {
+        Model getModel(int position);
         void onItemClick(int position);
     }
 }
