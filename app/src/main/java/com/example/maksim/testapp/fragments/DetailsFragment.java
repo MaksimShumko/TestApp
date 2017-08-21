@@ -1,31 +1,25 @@
 package com.example.maksim.testapp.fragments;
 
-import android.content.Context;
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.activities.MainActivity;
 import com.example.maksim.testapp.contracts.ModelFormViewContract;
 import com.example.maksim.testapp.models.Model;
 import com.example.maksim.testapp.presenters.ModelFormPresenter;
 
-public class FormFragment extends Fragment implements ModelFormViewContract.View {
+public class DetailsFragment extends Fragment implements ModelFormViewContract.View {
+    public static final String SELECTED_MODEL = "SELECTED_MODEL";
     private TextView textView;
     private Model model;
     private ModelFormViewContract.Presenter presenter;
 
-    public FormFragment() {
-        // Required empty public constructor
+    public DetailsFragment() {
         presenter = new ModelFormPresenter(this);
-    }
-
-    public static FormFragment newInstance() {
-        return new FormFragment();
     }
 
     @Override
@@ -33,7 +27,7 @@ public class FormFragment extends Fragment implements ModelFormViewContract.View
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         if(bundle != null)
-            model = bundle.getParcelable("model");
+            model = bundle.getParcelable(SELECTED_MODEL);
         else
             model = presenter.getModel(0);
     }
@@ -41,7 +35,7 @@ public class FormFragment extends Fragment implements ModelFormViewContract.View
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_form, container, false);
+        View view = inflater.inflate(R.layout.fragment_details, container, false);
         textView = (TextView) view.findViewById(R.id.textView);
         if(model != null)
             textView.setText(model.getTitle() + " " + model.getDescription());
@@ -49,27 +43,19 @@ public class FormFragment extends Fragment implements ModelFormViewContract.View
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        /*boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
-        if(isLandTablet)
-            ((MainActivity) getActivity()).setActionBarTitle("List & form");
-        else
-            ((MainActivity) getActivity()).setActionBarTitle("Form");*/
-    }
-
-    @Override
     public void onItemClick(int position) {
 
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void updateContent(Model model) {
+        if(model != null) {
+            this.model = model;
+            if(textView != null)
+                textView.setText(this.model.getTitle() + " " + this.model.getDescription());
+        }
     }
 }

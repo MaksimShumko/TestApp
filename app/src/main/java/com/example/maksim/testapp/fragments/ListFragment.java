@@ -1,10 +1,10 @@
 package com.example.maksim.testapp.fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.Parcelable;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.activities.MainActivity;
 import com.example.maksim.testapp.adapters.RecyclerViewAdapter;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
 import com.example.maksim.testapp.models.Model;
@@ -24,17 +23,15 @@ import java.util.List;
 
 public class ListFragment extends Fragment implements ModelListViewContract.View {
 
+    public static final String RECYCLER_LAYOUT_STATE = "RECYCLER_LAYOUT_STATE";
     private ModelListViewContract.Presenter presenter;
     private RecyclerViewAdapter adapter;
     private OnListFragmentInteractionListener onListFragmentInteractionListener;
+    private RecyclerView recyclerView;
+    private Parcelable savedRecyclerLayoutState;
 
     public ListFragment() {
         Log.e("ListFragment", "ListFragment");
-    }
-
-    public static ListFragment newInstance() {
-        Log.e("ListFragment", "newInstance");
-        return new ListFragment();
     }
 
     @Override
@@ -42,6 +39,9 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
         Log.e("ListFragment", "onCreate");
         super.onCreate(savedInstanceState);
         presenter = new ModelListPresenter(this);
+        Bundle bundle = getArguments();
+        if(bundle != null)
+            setSavedRecyclerLayoutState(bundle.getParcelable(RECYCLER_LAYOUT_STATE));
     }
 
     @Override
@@ -50,14 +50,23 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
         Log.e("ListFragment", "onCreateView");
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        RecyclerView recyclerView = (RecyclerView) view;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView = (RecyclerView) view;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new RecyclerViewAdapter(getContext(), presenter.getAllModels());
+        adapter = new RecyclerViewAdapter(getActivity(), presenter.getAllModels());
         adapter.setOnItemClickListener(presenter);
         recyclerView.setAdapter(adapter);
         notifyDataSetChanged();
+
         return view;
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if(savedRecyclerLayoutState != null && recyclerView != null)
+            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
     }
 
     @Override
@@ -71,16 +80,15 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
         }
     }
 
-    @Override
-    public void onDetach() {
-        Log.e("ListFragment", "onDetach");
-        super.onDetach();
+    public Parcelable getSavedRecyclerLayoutState() {
+        if(recyclerView != null) {
+            return recyclerView.getLayoutManager().onSaveInstanceState();
+        }
+        return null;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity) getActivity()).setActionBarTitle("List");
+    public void setSavedRecyclerLayoutState(Parcelable savedRecyclerLayoutState) {
+        this.savedRecyclerLayoutState = savedRecyclerLayoutState;
     }
 
     @Override

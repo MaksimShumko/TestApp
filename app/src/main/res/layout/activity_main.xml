@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:activity="com.example.maksim.testapp.activities.MainActivity">
+    android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/fragmentContainerLeft"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.4" />
-
-    <FrameLayout
-        android:id="@+id/fragmentContainerRight"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.6"/>
-
+        android:id="@+id/fragmentContainer"
+        android:background="?android:attr/windowBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

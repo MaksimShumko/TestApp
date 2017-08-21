@@ -1,8 +1,9 @@
 package com.example.maksim.testapp.activities;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,19 +11,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.fragments.FormFragment;
+import com.example.maksim.testapp.fragments.DetailsFragment;
 import com.example.maksim.testapp.fragments.ListFragment;
 import com.example.maksim.testapp.models.Model;
 
-public class MainActivity extends AppCompatActivity implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity
+        implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
 
     private FragmentManager fragmentManager;
     private ActionBar actionBar;
+    private boolean isLandTablet;
+    private Model savedModelState;
+    private Parcelable savedRecyclerLayoutState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,57 +32,65 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        fragmentManager = getSupportFragmentManager();
-        if(savedInstanceState == null)
-            init();
+        init(savedInstanceState);
     }
 
-    private void init() {
+    private void init(Bundle savedInstanceState) {
+        isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
+        fragmentManager = getFragmentManager();
+
         actionBar = getSupportActionBar();
         setFragmentManagerListener();
 
-        ListFragment listFragment = null;
-        if(fragmentManager.findFragmentById(R.id.fragmentContainerLeft) instanceof ListFragment)
-            listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.fragmentContainerLeft);
-        if(listFragment == null) {
-            listFragment = ListFragment.newInstance();
-            startFragment(listFragment, R.id.fragmentContainerLeft, true, false);
-        }
+        if(!isLandTablet) {
 
-        boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
-        if (isLandTablet) {
-            showSecondFragment();
+            if (savedInstanceState == null) {
+                ListFragment listFragment = new ListFragment();
+                startFragment(listFragment, R.id.fragmentContainer, true, false);
+            } else {
+                savedRecyclerLayoutState = savedInstanceState
+                        .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
+                savedModelState = savedInstanceState
+                        .getParcelable(DetailsFragment.SELECTED_MODEL);
+
+                Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
+                if (fragment != null) {
+                    if(fragment instanceof ListFragment) {
+                        ((ListFragment) fragment).setSavedRecyclerLayoutState(savedRecyclerLayoutState);
+                    } else if(fragment instanceof DetailsFragment) {
+                        ((DetailsFragment) fragment).updateContent(savedModelState);
+                    }
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
+
+                    ListFragment listFragment = new ListFragment();
+                    listFragment.setArguments(bundle);
+                    startFragment(listFragment, R.id.fragmentContainer, true, false);
+                }
+            }
+
         } else {
-            stopFragmentIfExist();
+
+            if(savedInstanceState != null) {
+                ListFragment listFragment = (ListFragment) fragmentManager
+                        .findFragmentById(R.id.list_fragment);
+                if (listFragment != null) {
+                    savedRecyclerLayoutState = savedInstanceState
+                            .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
+                    listFragment.setSavedRecyclerLayoutState(savedRecyclerLayoutState);
+                }
+
+                DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
+                        .findFragmentById(R.id.details_fragment);
+                if (detailsFragment != null) {
+                    savedModelState = savedInstanceState
+                            .getParcelable(DetailsFragment.SELECTED_MODEL);
+                    detailsFragment.updateContent(savedModelState);
+                }
+            }
+
         }
-    }
-
-    private void showSecondFragment() {
-        FormFragment formFragment = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
-        if(formFragment == null) {
-            formFragment = FormFragment.newInstance();
-            startFragment(formFragment, R.id.fragmentContainerRight, true, false);
-        }
-    }
-
-    private void stopFragmentIfExist() {
-        //setLayoutWeight();
-
-        FormFragment formFragment = (FormFragment) fragmentManager.findFragmentById(R.id.fragmentContainerRight);
-        if (formFragment != null) {
-            FrameLayout frameLayout = (FrameLayout) findViewById(R.id.fragmentContainerRight);
-            frameLayout.setVisibility(View.GONE);
-        }
-            //stopFragment(formFragment);
-    }
-
-    private void setLayoutWeight() {
-        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.fragmentContainerLeft);
-        LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) frameLayout.getLayoutParams();
-        param.weight = 1.0f;
-        param.width = LinearLayout.LayoutParams.MATCH_PARENT;
-        frameLayout.setLayoutParams(param);
     }
 
     private void startFragment(Fragment fragment, int fragmentContainer, boolean replace, boolean addToBackStack) {
@@ -95,43 +105,69 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
         transaction.commitAllowingStateLoss();
     }
 
-    private void stopFragment(Fragment fragment) {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.remove(fragment);
-        transaction.commitAllowingStateLoss();
-    }
-
     private void setFragmentManagerListener() {
         fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-                if(actionBar != null) {
-                    boolean enableBackButton = backStackCount > 0;
-                    actionBar.setHomeButtonEnabled(enableBackButton);
-                    actionBar.setDisplayHomeAsUpEnabled(enableBackButton);
-                }
+                setMenuBackButton();
             }
         });
     }
 
     @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(isLandTablet) {
+
+            ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.list_fragment);
+            if (listFragment != null) {
+                Parcelable savedRecyclerLayoutState = listFragment.getSavedRecyclerLayoutState();
+                outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
+            }
+
+            DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
+                    .findFragmentById(R.id.details_fragment);
+            if (detailsFragment != null) {
+                Model savedModelState = detailsFragment.getModel();
+                outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedModelState);
+            }
+
+        } else {
+
+            Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
+            if (fragment != null) {
+                if(fragment instanceof ListFragment) {
+                    savedRecyclerLayoutState = ((ListFragment) fragment).getSavedRecyclerLayoutState();
+                } else if(fragment instanceof DetailsFragment) {
+                    savedModelState = ((DetailsFragment) fragment).getModel();
+                }
+
+                outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
+                outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedModelState);
+            }
+
+        }
+    }
+
+    @Override
     public void onListFragmentInteraction(Model model) {
         Log.e("MainActivity", "onListFragmentInteraction");
+        savedModelState = model;
         onItemSelected(model);
     }
 
     private void onItemSelected(Model model) {
-        FormFragment formFragment = FormFragment.newInstance();
+        DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
+                .findFragmentById(R.id.details_fragment);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("model", model);
-        formFragment.setArguments(bundle);
-
-        boolean isLandTablet = getResources().getBoolean(R.bool.isLandTablet);
-        if (!isLandTablet) {
-            startFragment(formFragment, R.id.fragmentContainerLeft, true, true);
+        bundle.putParcelable(DetailsFragment.SELECTED_MODEL, model);
+        if (detailsFragment == null || !isLandTablet) {
+            detailsFragment = new DetailsFragment();
+            detailsFragment.setArguments(bundle);
+            startFragment(detailsFragment, R.id.fragmentContainer, false, true);
         } else {
-            startFragment(formFragment, R.id.fragmentContainerRight, true, false);
+            detailsFragment.updateContent(model);
         }
     }
 
@@ -139,23 +175,37 @@ public class MainActivity extends AppCompatActivity implements com.example.maksi
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+
+        if(!isLandTablet) {
+            setMenuBackButton();
+        }
         return true;
+    }
+
+    private void setMenuBackButton() {
+        if(actionBar != null) {
+            int backStackCount = fragmentManager.getBackStackEntryCount();
+            boolean enableBackButton = backStackCount > 0;
+            actionBar.setHomeButtonEnabled(enableBackButton);
+            actionBar.setDisplayHomeAsUpEnabled(enableBackButton);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (fragmentManager.getBackStackEntryCount() > 0) {
+                if (fragmentManager.getBackStackEntryCount() > 0)
                     fragmentManager.popBackStack();
-                }
+                break;
             case R.id.menu_go_back:
+                break;
             default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
-    public void setActionBarTitle(String title) {
+    private void setActionBarTitle(String title) {
         Log.e("MainActivity", "setActionBarTitle " + title);
         if(actionBar != null)
             actionBar.setTitle(title);

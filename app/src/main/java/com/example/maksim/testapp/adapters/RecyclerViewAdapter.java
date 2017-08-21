@@ -1,13 +1,11 @@
 package com.example.maksim.testapp.adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
@@ -36,6 +34,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        //Log.e(LOG_TAG, "onCreateViewHolder");
         LayoutInflater inflater = LayoutInflater.from(context);
         View item = inflater.inflate(R.layout.list_item, parent, false);
         return new ViewHolder(item);
@@ -43,6 +42,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        //Log.e(LOG_TAG, "onBindViewHolder");
         if(holder != null) {
             final Model element = elements.get(position);
             holder.title.setText(element.getTitle());
@@ -59,6 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
+        //Log.e(LOG_TAG, "getItemCount");
         if(elements != null)
             return elements.size();
         return 0;
@@ -71,6 +72,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         ViewHolder(View itemView) {
             super(itemView);
+            //Log.e(LOG_TAG, "ViewHolder");
             this.itemView = itemView;
             title = (TextView) itemView.findViewById(R.id.listItemTitle);
             description = (TextView) itemView.findViewById(R.id.listItemDescription);
