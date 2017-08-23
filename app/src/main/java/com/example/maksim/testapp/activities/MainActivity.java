@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState == null) {
                 ListFragment listFragment = new ListFragment();
                 startFragment(listFragment, R.id.fragmentContainer, true, false);
+
+                setActionBarTitle(getString(R.string.menu_title_list));
             } else {
                 savedRecyclerLayoutState = savedInstanceState
                         .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
@@ -57,8 +59,12 @@ public class MainActivity extends AppCompatActivity
                 if (fragment != null) {
                     if(fragment instanceof ListFragment) {
                         ((ListFragment) fragment).setSavedRecyclerLayoutState(savedRecyclerLayoutState);
+
+                        setActionBarTitle(getString(R.string.menu_title_list));
                     } else if(fragment instanceof DetailsFragment) {
                         ((DetailsFragment) fragment).updateContent(savedModelState);
+
+                        setActionBarTitle(getString(R.string.menu_title_details));
                     }
                 } else {
                     Bundle bundle = new Bundle();
@@ -67,6 +73,8 @@ public class MainActivity extends AppCompatActivity
                     ListFragment listFragment = new ListFragment();
                     listFragment.setArguments(bundle);
                     startFragment(listFragment, R.id.fragmentContainer, true, false);
+
+                    setActionBarTitle(getString(R.string.menu_title_list));
                 }
             }
 
@@ -88,6 +96,8 @@ public class MainActivity extends AppCompatActivity
                             .getParcelable(DetailsFragment.SELECTED_MODEL);
                     detailsFragment.updateContent(savedModelState);
                 }
+
+                setActionBarTitle(getString(R.string.menu_title_list_and_details));
             }
 
         }
@@ -166,6 +176,8 @@ public class MainActivity extends AppCompatActivity
             detailsFragment = new DetailsFragment();
             detailsFragment.setArguments(bundle);
             startFragment(detailsFragment, R.id.fragmentContainer, false, true);
+
+            setActionBarTitle(getString(R.string.menu_title_details));
         } else {
             detailsFragment.updateContent(model);
         }
@@ -195,8 +207,11 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (fragmentManager.getBackStackEntryCount() > 0)
+                if (fragmentManager.getBackStackEntryCount() > 0) {
                     fragmentManager.popBackStack();
+
+                    setActionBarTitle(getString(R.string.menu_title_list));
+                }
                 break;
             case R.id.menu_go_back:
                 break;

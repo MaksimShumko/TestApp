@@ -2,4 +2,7 @@
     <string name="app_name">TestApp</string>
 
     <string name="menu_go_back">Back</string>
+    <string name="menu_title_list">List</string>
+    <string name="menu_title_details">Details</string>
+    <string name="menu_title_list_and_details">List &amp; details</string>
 </resources>
