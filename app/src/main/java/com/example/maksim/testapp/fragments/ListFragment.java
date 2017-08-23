@@ -42,6 +42,8 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
         Bundle bundle = getArguments();
         if(bundle != null)
             setSavedRecyclerLayoutState(bundle.getParcelable(RECYCLER_LAYOUT_STATE));
+        else if(savedInstanceState != null)
+            setSavedRecyclerLayoutState(savedInstanceState.getParcelable(RECYCLER_LAYOUT_STATE));
     }
 
     @Override
@@ -67,6 +69,14 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
 
         if(savedRecyclerLayoutState != null && recyclerView != null)
             recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Parcelable savedRecyclerLayoutState = getSavedRecyclerLayoutState();
+        outState.putParcelable(RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
     }
 
     @Override

@@ -81,19 +81,20 @@ public class MainActivity extends AppCompatActivity
         } else {
 
             if(savedInstanceState != null) {
+                savedRecyclerLayoutState = savedInstanceState
+                        .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
+                savedModelState = savedInstanceState
+                        .getParcelable(DetailsFragment.SELECTED_MODEL);
+
                 ListFragment listFragment = (ListFragment) fragmentManager
                         .findFragmentById(R.id.list_fragment);
                 if (listFragment != null) {
-                    savedRecyclerLayoutState = savedInstanceState
-                            .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
                     listFragment.setSavedRecyclerLayoutState(savedRecyclerLayoutState);
                 }
 
                 DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
                         .findFragmentById(R.id.details_fragment);
                 if (detailsFragment != null) {
-                    savedModelState = savedInstanceState
-                            .getParcelable(DetailsFragment.SELECTED_MODEL);
                     detailsFragment.updateContent(savedModelState);
                 }
 
@@ -132,9 +133,9 @@ public class MainActivity extends AppCompatActivity
 
             ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.list_fragment);
             if (listFragment != null) {
-                Parcelable savedRecyclerLayoutState = listFragment.getSavedRecyclerLayoutState();
-                outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
+                savedRecyclerLayoutState = listFragment.getSavedRecyclerLayoutState();
             }
+            outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
 
             DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
                     .findFragmentById(R.id.details_fragment);
@@ -173,6 +174,10 @@ public class MainActivity extends AppCompatActivity
         Bundle bundle = new Bundle();
         bundle.putParcelable(DetailsFragment.SELECTED_MODEL, model);
         if (detailsFragment == null || !isLandTablet) {
+            ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.fragmentContainer);
+            if(listFragment != null)
+                savedRecyclerLayoutState = listFragment.getSavedRecyclerLayoutState();
+
             detailsFragment = new DetailsFragment();
             detailsFragment.setArguments(bundle);
             startFragment(detailsFragment, R.id.fragmentContainer, false, true);
