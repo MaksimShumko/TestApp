@@ -20,6 +20,7 @@ import com.example.maksim.testapp.models.Model;
 public class MainActivity extends AppCompatActivity
         implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
 
+    private final String LOG = "MainActivity";
     private FragmentManager fragmentManager;
     private ActionBar actionBar;
     private boolean isLandTablet;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.e("MainActivity", "onCreate");
+        Log.e(LOG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -42,66 +43,164 @@ public class MainActivity extends AppCompatActivity
         actionBar = getSupportActionBar();
         setFragmentManagerListener();
 
-        if(!isLandTablet) {
-
-            if (savedInstanceState == null) {
-                ListFragment listFragment = new ListFragment();
-                startFragment(listFragment, R.id.fragmentContainer, true, false);
-
-                setActionBarTitle(getString(R.string.menu_title_list));
-            } else {
-                savedRecyclerLayoutState = savedInstanceState
-                        .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
-                savedModelState = savedInstanceState
-                        .getParcelable(DetailsFragment.SELECTED_MODEL);
-
-                Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
-                if (fragment != null) {
-                    if(fragment instanceof ListFragment) {
-                        ((ListFragment) fragment).setSavedRecyclerLayoutState(savedRecyclerLayoutState);
-
-                        setActionBarTitle(getString(R.string.menu_title_list));
-                    } else if(fragment instanceof DetailsFragment) {
-                        ((DetailsFragment) fragment).updateContent(savedModelState);
-
-                        setActionBarTitle(getString(R.string.menu_title_details));
-                    }
-                } else {
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
-
-                    ListFragment listFragment = new ListFragment();
-                    listFragment.setArguments(bundle);
-                    startFragment(listFragment, R.id.fragmentContainer, true, false);
-
-                    setActionBarTitle(getString(R.string.menu_title_list));
-                }
-            }
-
-        } else {
-
-            if(savedInstanceState != null) {
-                savedRecyclerLayoutState = savedInstanceState
-                        .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
-                savedModelState = savedInstanceState
-                        .getParcelable(DetailsFragment.SELECTED_MODEL);
-
-                ListFragment listFragment = (ListFragment) fragmentManager
-                        .findFragmentById(R.id.list_fragment);
-                if (listFragment != null) {
-                    listFragment.setSavedRecyclerLayoutState(savedRecyclerLayoutState);
-                }
-
-                DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
-                        .findFragmentById(R.id.details_fragment);
-                if (detailsFragment != null) {
-                    detailsFragment.updateContent(savedModelState);
-                }
-
-                setActionBarTitle(getString(R.string.menu_title_list_and_details));
-            }
-
+        if(savedInstanceState != null) {
+            savedRecyclerLayoutState = savedInstanceState
+                    .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
+            savedModelState = savedInstanceState
+                    .getParcelable(DetailsFragment.SELECTED_MODEL);
         }
+
+        if (savedInstanceState == null && !isLandTablet) {
+            ListFragment listFragment = new ListFragment();
+            startFragment(listFragment, R.id.fragmentContainer, true, false);
+        } else if(savedInstanceState != null) {
+            if (!isLandTablet) {
+                updatePortraitTabletAndPhoneState();
+            } else {
+                updateLandTabletState();
+            }
+        }
+
+        setActionBarTitle();
+    }
+
+    private void updateLandTabletState() {
+        clearBackStack();
+
+        ListFragment listFragment = (ListFragment) fragmentManager
+                .findFragmentById(R.id.list_fragment);
+        if (listFragment != null) {
+            listFragment.setSavedRecyclerLayoutState(savedRecyclerLayoutState);
+        }
+
+        DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
+                .findFragmentById(R.id.details_fragment);
+        if (detailsFragment != null) {
+            detailsFragment.updateContent(savedModelState);
+        }
+    }
+
+    private void updatePortraitTabletAndPhoneState() {
+        Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
+        if (fragment != null) {
+            if(fragment instanceof ListFragment) {
+                ((ListFragment) fragment).setSavedRecyclerLayoutState(savedRecyclerLayoutState);
+            } else if(fragment instanceof DetailsFragment) {
+                ((DetailsFragment) fragment).updateContent(savedModelState);
+            }
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
+
+            ListFragment listFragment = new ListFragment();
+            listFragment.setArguments(bundle);
+            startFragment(listFragment, R.id.fragmentContainer, true, false);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(isLandTablet) {
+            saveStateFromLandTablet(outState);
+        } else {
+            saveStateFromPortraitTabletAndPhone(outState);
+        }
+    }
+
+    private void saveStateFromLandTablet(Bundle outState) {
+        ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.list_fragment);
+        if (listFragment != null) {
+            savedRecyclerLayoutState = listFragment.getSavedRecyclerLayoutState();
+        }
+        outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
+
+        DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
+                .findFragmentById(R.id.details_fragment);
+        if (detailsFragment != null) {
+            Model savedModelState = detailsFragment.getModel();
+            outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedModelState);
+        }
+    }
+
+    private void saveStateFromPortraitTabletAndPhone(Bundle outState) {
+        Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
+        if (fragment != null) {
+            if(fragment instanceof ListFragment) {
+                savedRecyclerLayoutState = ((ListFragment) fragment).getSavedRecyclerLayoutState();
+            } else if(fragment instanceof DetailsFragment) {
+                savedModelState = ((DetailsFragment) fragment).getModel();
+            }
+
+            outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
+            outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedModelState);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        if(!isLandTablet) {
+            setMenuBackButton();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (fragmentManager.getBackStackEntryCount() > 0) {
+                    fragmentManager.popBackStack();
+                }
+                break;
+            case R.id.menu_go_back:
+                break;
+            default:
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setFragmentManagerListener() {
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                setMenuBackButton();
+            }
+        });
+    }
+
+    private void setMenuBackButton() {
+        if(actionBar != null) {
+            int backStackCount = fragmentManager.getBackStackEntryCount();
+            boolean enableBackButton = backStackCount > 0;
+            actionBar.setHomeButtonEnabled(enableBackButton);
+            actionBar.setDisplayHomeAsUpEnabled(enableBackButton);
+        }
+
+        setActionBarTitle();
+    }
+
+    private void setActionBarTitle() {
+        if(isLandTablet) {
+            setActionBarTitle(getString(R.string.menu_title_list_and_details));
+        } else {
+            Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
+            if (fragment instanceof DetailsFragment) {
+                setActionBarTitle(getString(R.string.menu_title_details));
+            } else {
+                setActionBarTitle(getString(R.string.menu_title_list));
+            }
+        }
+    }
+
+    private void setActionBarTitle(String title) {
+        Log.e(LOG, "setActionBarTitle " + title);
+        if(actionBar != null)
+            actionBar.setTitle(title);
     }
 
     private void startFragment(Fragment fragment, int fragmentContainer, boolean replace, boolean addToBackStack) {
@@ -116,54 +215,16 @@ public class MainActivity extends AppCompatActivity
         transaction.commitAllowingStateLoss();
     }
 
-    private void setFragmentManagerListener() {
-        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                setMenuBackButton();
-            }
-        });
-    }
-
-    @Override
-    protected void onSaveInstanceState(final Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        if(isLandTablet) {
-
-            ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.list_fragment);
-            if (listFragment != null) {
-                savedRecyclerLayoutState = listFragment.getSavedRecyclerLayoutState();
-            }
-            outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
-
-            DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
-                    .findFragmentById(R.id.details_fragment);
-            if (detailsFragment != null) {
-                Model savedModelState = detailsFragment.getModel();
-                outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedModelState);
-            }
-
-        } else {
-
-            Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
-            if (fragment != null) {
-                if(fragment instanceof ListFragment) {
-                    savedRecyclerLayoutState = ((ListFragment) fragment).getSavedRecyclerLayoutState();
-                } else if(fragment instanceof DetailsFragment) {
-                    savedModelState = ((DetailsFragment) fragment).getModel();
-                }
-
-                outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
-                outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedModelState);
-            }
-
+    private void clearBackStack() {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry backStackEntry = fragmentManager.getBackStackEntryAt(0);
+            fragmentManager.popBackStack(backStackEntry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 
     @Override
     public void onListFragmentInteraction(Model model) {
-        Log.e("MainActivity", "onListFragmentInteraction");
+        Log.e(LOG, "onListFragmentInteraction");
         savedModelState = model;
         onItemSelected(model);
     }
@@ -186,48 +247,5 @@ public class MainActivity extends AppCompatActivity
         } else {
             detailsFragment.updateContent(model);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-
-        if(!isLandTablet) {
-            setMenuBackButton();
-        }
-        return true;
-    }
-
-    private void setMenuBackButton() {
-        if(actionBar != null) {
-            int backStackCount = fragmentManager.getBackStackEntryCount();
-            boolean enableBackButton = backStackCount > 0;
-            actionBar.setHomeButtonEnabled(enableBackButton);
-            actionBar.setDisplayHomeAsUpEnabled(enableBackButton);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (fragmentManager.getBackStackEntryCount() > 0) {
-                    fragmentManager.popBackStack();
-
-                    setActionBarTitle(getString(R.string.menu_title_list));
-                }
-                break;
-            case R.id.menu_go_back:
-                break;
-            default:
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setActionBarTitle(String title) {
-        Log.e("MainActivity", "setActionBarTitle " + title);
-        if(actionBar != null)
-            actionBar.setTitle(title);
     }
 }

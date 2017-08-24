@@ -24,6 +24,7 @@ import java.util.List;
 public class ListFragment extends Fragment implements ModelListViewContract.View {
 
     public static final String RECYCLER_LAYOUT_STATE = "RECYCLER_LAYOUT_STATE";
+    private final String LOG = "ListFragment";
     private ModelListViewContract.Presenter presenter;
     private RecyclerViewAdapter adapter;
     private OnListFragmentInteractionListener onListFragmentInteractionListener;
@@ -31,12 +32,12 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     private Parcelable savedRecyclerLayoutState;
 
     public ListFragment() {
-        Log.e("ListFragment", "ListFragment");
+        Log.e(LOG, "ListFragment");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.e("ListFragment", "onCreate");
+        Log.e(LOG, "onCreate");
         super.onCreate(savedInstanceState);
         presenter = new ModelListPresenter(this);
         Bundle bundle = getArguments();
@@ -49,7 +50,7 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e("ListFragment", "onCreateView");
+        Log.e(LOG, "onCreateView");
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         recyclerView = (RecyclerView) view;
@@ -81,7 +82,7 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
 
     @Override
     public void onAttach(Context context) {
-        Log.e("ListFragment", "onAttach");
+        Log.e(LOG, "onAttach");
         super.onAttach(context);
         try {
             onListFragmentInteractionListener = (OnListFragmentInteractionListener) getActivity();
