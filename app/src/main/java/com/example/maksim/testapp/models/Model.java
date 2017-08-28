@@ -1,54 +1,88 @@
 package com.example.maksim.testapp.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import com.example.maksim.testapp.contracts.ModelListViewContract;
+import com.example.maksim.testapp.github.UserDataLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Maksim on 2017-07-20.
+ * Created by Maksim on 2017-07-10.
  */
 
-public class Model implements Parcelable {
-    private String title;
-    private String description;
+public class Model implements ModelListViewContract.Model, UserDataLoader.OnUserLoaderCompleted {
+    private List<GitHubUser> gitHubUsers;
+    private ModelListViewContract.Presenter presenter;
+
+    private static Model model;
+
+    public static Model getInstance() {
+        if(model == null)
+            model = new Model();
+        return model;
+    }
+
+    public static Model getInstance(ModelListViewContract.Presenter presenter) {
+        if(model == null)
+            model = new Model(presenter);
+        return model;
+    }
+
+    private Model() {
+
+    }
+
+    private Model(ModelListViewContract.Presenter presenter) {
+        this.presenter = presenter;
+        init();
+    }
+
+    private void init() {
+        gitHubUsers = new ArrayList<>();
+        /*for(int i = 0; i < 100; i++) {
+            String title = "Title " + String.valueOf(i);
+            String description = "Description " + String.valueOf(i);
+            gitHubUsers.add(new GitHubUser(title, description, "", "", 0));
+        }*/
+        String query = "q=Maksim&order=desc";
+
+        new UserDataLoader(this).execute(query);
+    }
 
     @Override
-    public int describeContents() {
+    public GitHubUser getGitHubUser(int position) {
+        if(gitHubUsers != null && gitHubUsers.size() >= 0)
+            return gitHubUsers.get(position);
+        return null;
+    }
+
+    @Override
+    public void addGitHubUser(GitHubUser object) {
+        if(gitHubUsers == null)
+            gitHubUsers = new ArrayList<>();
+        gitHubUsers.add(object);
+    }
+
+    @Override
+    public boolean deleteGitHubUser(GitHubUser object) {
+        return gitHubUsers != null && gitHubUsers.remove(object);
+    }
+
+    @Override
+    public List<GitHubUser> getAllGitHubUsers() {
+        return gitHubUsers;
+    }
+
+    @Override
+    public int getCount() {
+        if(gitHubUsers != null)
+            return gitHubUsers.size();
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(description);
-    }
-
-    public Model(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-
-    private Model(Parcel in) {
-        title = in.readString();
-        description = in.readString();
-    }
-
-    public static final Creator<Model> CREATOR = new Creator<Model>() {
-        @Override
-        public Model createFromParcel(Parcel in) {
-            return new Model(in);
-        }
-
-        @Override
-        public Model[] newArray(int size) {
-            return new Model[size];
-        }
-    };
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
+    public void onUserLoaderCompleted(List<GitHubUser> gitHubUsers) {
+        this.gitHubUsers = gitHubUsers;
+        presenter.notifyDataSetChanged();
     }
 }

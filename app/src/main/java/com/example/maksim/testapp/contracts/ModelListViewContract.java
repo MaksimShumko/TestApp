@@ -1,6 +1,6 @@
 package com.example.maksim.testapp.contracts;
 
-import com.example.maksim.testapp.models.Model;
+import com.example.maksim.testapp.models.GitHubUser;
 
 import java.util.List;
 
@@ -9,26 +9,27 @@ import java.util.List;
  */
 
 public class ModelListViewContract {
-    public interface Repository {
-        Model getModel(int position);
-        void addModel(Model object);
-        boolean deleteModel(Model object);
-        List<Model> getAllModels();
+    public interface Model {
+        GitHubUser getGitHubUser(int position);
+        void addGitHubUser(GitHubUser object);
+        boolean deleteGitHubUser(GitHubUser object);
+        List<GitHubUser> getAllGitHubUsers();
         int getCount();
     }
 
     public interface View {
-        void showView(List<Model> elements);
+        void showView(List<GitHubUser> elements);
         void notifyDataSetChanged();
-        void onItemClick(Model model);
+        void onItemClick(GitHubUser gitHubUser);
     }
 
     public interface Presenter extends OnItemClickListener {
         void loadModels();
-        List<Model> getAllModels();
+        List<GitHubUser> getAllModels();
+        void notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Model model);
+        void onItemClick(GitHubUser gitHubUser);
     }
 }

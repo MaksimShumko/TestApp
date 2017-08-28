@@ -9,13 +9,13 @@ import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.contracts.ModelFormViewContract;
-import com.example.maksim.testapp.models.Model;
+import com.example.maksim.testapp.models.GitHubUser;
 import com.example.maksim.testapp.presenters.ModelFormPresenter;
 
 public class DetailsFragment extends Fragment implements ModelFormViewContract.View {
     public static final String SELECTED_MODEL = "SELECTED_MODEL";
     private TextView textView;
-    private Model model;
+    private GitHubUser gitHubUser;
     private ModelFormViewContract.Presenter presenter;
 
     public DetailsFragment() {
@@ -27,9 +27,9 @@ public class DetailsFragment extends Fragment implements ModelFormViewContract.V
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         if(bundle != null)
-            model = bundle.getParcelable(SELECTED_MODEL);
+            gitHubUser = bundle.getParcelable(SELECTED_MODEL);
         else
-            model = presenter.getModel(0);
+            gitHubUser = presenter.getModel(0);
     }
 
     @Override
@@ -37,8 +37,8 @@ public class DetailsFragment extends Fragment implements ModelFormViewContract.V
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         textView = (TextView) view.findViewById(R.id.textView);
-        if(model != null)
-            textView.setText(model.getTitle() + " " + model.getDescription());
+        if(gitHubUser != null)
+            textView.setText(gitHubUser.getLogin() + " " + gitHubUser.getName());
         return view;
     }
 
@@ -47,15 +47,15 @@ public class DetailsFragment extends Fragment implements ModelFormViewContract.V
 
     }
 
-    public Model getModel() {
-        return model;
+    public GitHubUser getGitHubUser() {
+        return gitHubUser;
     }
 
-    public void updateContent(Model model) {
-        if(model != null) {
-            this.model = model;
+    public void updateContent(GitHubUser gitHubUser) {
+        if(gitHubUser != null) {
+            this.gitHubUser = gitHubUser;
             if(textView != null)
-                textView.setText(this.model.getTitle() + " " + this.model.getDescription());
+                textView.setText(this.gitHubUser.getLogin() + " " + this.gitHubUser.getName());
         }
     }
 }

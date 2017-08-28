@@ -15,13 +15,13 @@ import android.view.ViewGroup;
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.adapters.RecyclerViewAdapter;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
-import com.example.maksim.testapp.models.Model;
+import com.example.maksim.testapp.models.GitHubUser;
 import com.example.maksim.testapp.presenters.ModelListPresenter;
 
 import java.util.List;
 
 
-public class ListFragment extends Fragment implements ModelListViewContract.View {
+public class ListFragment extends Fragment implements ModelListViewContract.View{
 
     public static final String RECYCLER_LAYOUT_STATE = "RECYCLER_LAYOUT_STATE";
     private final String LOG = "ListFragment";
@@ -59,7 +59,6 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
         adapter = new RecyclerViewAdapter(getActivity(), presenter.getAllModels());
         adapter.setOnItemClickListener(presenter);
         recyclerView.setAdapter(adapter);
-        notifyDataSetChanged();
 
         return view;
     }
@@ -103,21 +102,22 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     }
 
     @Override
-    public void showView(List<Model> elements) {
+    public void showView(List<GitHubUser> elements) {
 
     }
 
     @Override
     public void notifyDataSetChanged() {
+        adapter.updateElements(presenter.getAllModels());
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onItemClick(Model model) {
-        onListFragmentInteractionListener.onListFragmentInteraction(model);
+    public void onItemClick(GitHubUser gitHubUser) {
+        onListFragmentInteractionListener.onListFragmentInteraction(gitHubUser);
     }
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Model model);
+        void onListFragmentInteraction(GitHubUser gitHubUser);
     }
 }

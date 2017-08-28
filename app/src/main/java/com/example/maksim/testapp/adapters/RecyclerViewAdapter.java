@@ -6,21 +6,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
-import com.example.maksim.testapp.models.Model;
+import com.example.maksim.testapp.models.GitHubUser;
+import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private final String LOG_TAG = "RecyclerViewAdapter";
-    private List<Model> elements;
+    private List<GitHubUser> elements;
     private ModelListViewContract.OnItemClickListener listener;
     private Context context;
 
-    public RecyclerViewAdapter(Context context, List<Model> elements) {
+    public RecyclerViewAdapter(Context context, List<GitHubUser> elements) {
         Log.e(LOG_TAG, "RecyclerViewAdapter");
 
         this.context = context;
@@ -32,9 +36,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.listener = listener;
     }
 
+    public void updateElements(List<GitHubUser> elements) {
+        this.elements = elements;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //Log.e(LOG_TAG, "onCreateViewHolder");
+        Log.e(LOG_TAG, "onCreateViewHolder");
         LayoutInflater inflater = LayoutInflater.from(context);
         View item = inflater.inflate(R.layout.list_item, parent, false);
         return new ViewHolder(item);
@@ -42,11 +50,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        //Log.e(LOG_TAG, "onBindViewHolder");
+        Log.e(LOG_TAG, "onBindViewHolder");
         if(holder != null) {
-            final Model element = elements.get(position);
-            holder.title.setText(element.getTitle());
-            holder.description.setText(element.getDescription());
+            final GitHubUser element = elements.get(position);
+            holder.login.setText(element.getLogin());
+            holder.name.setText(element.getName());
+            Picasso.with(context)
+                    .load(element.getAvatarUrl())
+                    .into(holder.avatar);
+            holder.score.setText(String.valueOf(element.getScore()));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -59,23 +71,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        //Log.e(LOG_TAG, "getItemCount");
+        Log.e(LOG_TAG, "getItemCount");
         if(elements != null)
             return elements.size();
         return 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView description;
+        TextView login;
+        TextView name;
+        ImageView avatar;
+        TextView score;
         View itemView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            //Log.e(LOG_TAG, "ViewHolder");
+            Log.e(LOG_TAG, "ViewHolder");
             this.itemView = itemView;
-            title = (TextView) itemView.findViewById(R.id.listItemTitle);
-            description = (TextView) itemView.findViewById(R.id.listItemDescription);
+            login = (TextView) itemView.findViewById(R.id.listItemLogin);
+            name = (TextView) itemView.findViewById(R.id.listItemName);
+            avatar = (ImageView) itemView.findViewById(R.id.listItemAvatar);
+            score = (TextView) itemView.findViewById(R.id.listItemScore);
         }
     }
 }

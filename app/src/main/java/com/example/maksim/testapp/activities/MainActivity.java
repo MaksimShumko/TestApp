@@ -15,7 +15,8 @@ import android.view.MenuItem;
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.fragments.DetailsFragment;
 import com.example.maksim.testapp.fragments.ListFragment;
-import com.example.maksim.testapp.models.Model;
+import com.example.maksim.testapp.github.InitRetrofit;
+import com.example.maksim.testapp.models.GitHubUser;
 
 public class MainActivity extends AppCompatActivity
         implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private ActionBar actionBar;
     private boolean isLandTablet;
-    private Model savedModelState;
+    private GitHubUser savedGitHubUserState;
     private Parcelable savedRecyclerLayoutState;
 
     @Override
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity
         if(savedInstanceState != null) {
             savedRecyclerLayoutState = savedInstanceState
                     .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
-            savedModelState = savedInstanceState
+            savedGitHubUserState = savedInstanceState
                     .getParcelable(DetailsFragment.SELECTED_MODEL);
         }
 
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
                 .findFragmentById(R.id.details_fragment);
         if (detailsFragment != null) {
-            detailsFragment.updateContent(savedModelState);
+            detailsFragment.updateContent(savedGitHubUserState);
         }
     }
 
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity
             if(fragment instanceof ListFragment) {
                 ((ListFragment) fragment).setSavedRecyclerLayoutState(savedRecyclerLayoutState);
             } else if(fragment instanceof DetailsFragment) {
-                ((DetailsFragment) fragment).updateContent(savedModelState);
+                ((DetailsFragment) fragment).updateContent(savedGitHubUserState);
             }
         } else {
             Bundle bundle = new Bundle();
@@ -119,8 +120,8 @@ public class MainActivity extends AppCompatActivity
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
                 .findFragmentById(R.id.details_fragment);
         if (detailsFragment != null) {
-            Model savedModelState = detailsFragment.getModel();
-            outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedModelState);
+            GitHubUser savedGitHubUserState = detailsFragment.getGitHubUser();
+            outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedGitHubUserState);
         }
     }
 
@@ -130,11 +131,11 @@ public class MainActivity extends AppCompatActivity
             if(fragment instanceof ListFragment) {
                 savedRecyclerLayoutState = ((ListFragment) fragment).getSavedRecyclerLayoutState();
             } else if(fragment instanceof DetailsFragment) {
-                savedModelState = ((DetailsFragment) fragment).getModel();
+                savedGitHubUserState = ((DetailsFragment) fragment).getGitHubUser();
             }
 
             outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
-            outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedModelState);
+            outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedGitHubUserState);
         }
     }
 
@@ -157,7 +158,8 @@ public class MainActivity extends AppCompatActivity
                     fragmentManager.popBackStack();
                 }
                 break;
-            case R.id.menu_go_back:
+            case R.id.menu_execute_git_hub:
+                InitRetrofit init = new InitRetrofit();
                 break;
             default:
         }
@@ -223,17 +225,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(Model model) {
+    public void onListFragmentInteraction(GitHubUser gitHubUser) {
         Log.e(LOG, "onListFragmentInteraction");
-        savedModelState = model;
-        onItemSelected(model);
+        savedGitHubUserState = gitHubUser;
+        onItemSelected(gitHubUser);
     }
 
-    private void onItemSelected(Model model) {
+    private void onItemSelected(GitHubUser gitHubUser) {
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
                 .findFragmentById(R.id.details_fragment);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(DetailsFragment.SELECTED_MODEL, model);
+        bundle.putParcelable(DetailsFragment.SELECTED_MODEL, gitHubUser);
         if (detailsFragment == null || !isLandTablet) {
             ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.fragmentContainer);
             if(listFragment != null)
@@ -245,7 +247,7 @@ public class MainActivity extends AppCompatActivity
 
             setActionBarTitle(getString(R.string.menu_title_details));
         } else {
-            detailsFragment.updateContent(model);
+            detailsFragment.updateContent(gitHubUser);
         }
     }
 }

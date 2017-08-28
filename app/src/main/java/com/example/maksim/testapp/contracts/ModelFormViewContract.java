@@ -1,8 +1,6 @@
 package com.example.maksim.testapp.contracts;
 
-import com.example.maksim.testapp.models.Model;
-
-import java.util.List;
+import com.example.maksim.testapp.models.GitHubUser;
 
 /**
  * Created by Maksim on 2017-07-16.
@@ -14,7 +12,7 @@ public class ModelFormViewContract {
     }
 
     public interface Presenter {
-        Model getModel(int position);
+        GitHubUser getModel(int position);
         void onItemClick(int position);
     }
 }

@@ -2,8 +2,8 @@ package com.example.maksim.testapp.presenters;
 
 import com.example.maksim.testapp.contracts.ModelFormViewContract;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
+import com.example.maksim.testapp.models.GitHubUser;
 import com.example.maksim.testapp.models.Model;
-import com.example.maksim.testapp.models.Repository;
 
 /**
  * Created by Maksim on 2017-07-16.
@@ -11,17 +11,17 @@ import com.example.maksim.testapp.models.Repository;
 
 public class ModelFormPresenter implements ModelFormViewContract.Presenter {
     private ModelFormViewContract.View view;
-    private ModelListViewContract.Repository repository;
+    private ModelListViewContract.Model model;
 
     public ModelFormPresenter(ModelFormViewContract.View view) {
         this.view = view;
-        repository = new Repository();
+        model = Model.getInstance();
     }
 
     @Override
-    public Model getModel(int position) {
-        if(repository != null)
-            return repository.getModel(position);
+    public GitHubUser getModel(int position) {
+        if(model != null)
+            return model.getGitHubUser(position);
         return null;
     }
 
@@ -29,4 +29,5 @@ public class ModelFormPresenter implements ModelFormViewContract.Presenter {
     public void onItemClick(int position) {
 
     }
+
 }
