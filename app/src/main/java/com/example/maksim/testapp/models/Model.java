@@ -1,6 +1,8 @@
 package com.example.maksim.testapp.models;
 
 import com.example.maksim.testapp.contracts.ModelListViewContract;
+import com.example.maksim.testapp.github.GitHubUsers;
+import com.example.maksim.testapp.github.InitRetrofit;
 import com.example.maksim.testapp.github.UserDataLoader;
 
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import java.util.List;
  * Created by Maksim on 2017-07-10.
  */
 
-public class Model implements ModelListViewContract.Model, UserDataLoader.OnUserLoaderCompleted {
+public class Model implements ModelListViewContract.Model, InitRetrofit.OnUserLoaderCompleted {
     private List<GitHubUser> gitHubUsers;
     private ModelListViewContract.Presenter presenter;
 
@@ -44,9 +46,11 @@ public class Model implements ModelListViewContract.Model, UserDataLoader.OnUser
             String description = "Description " + String.valueOf(i);
             gitHubUsers.add(new GitHubUser(title, description, "", "", 0));
         }*/
-        String query = "q=Maksim&order=desc";
 
-        new UserDataLoader(this).execute(query);
+        /*String query = "q=Maksim&order=desc";
+        new UserDataLoader(this).execute(query);*/
+
+        new InitRetrofit(this);
     }
 
     @Override
@@ -81,8 +85,19 @@ public class Model implements ModelListViewContract.Model, UserDataLoader.OnUser
     }
 
     @Override
-    public void onUserLoaderCompleted(List<GitHubUser> gitHubUsers) {
-        this.gitHubUsers = gitHubUsers;
+    public void onUserLoaderCompleted(GitHubUsers gitHubUsers) {
+        this.gitHubUsers = parseToUser(gitHubUsers);
         presenter.notifyDataSetChanged();
+    }
+
+    private List<GitHubUser> parseToUser(GitHubUsers gitHubUsers) {
+        List<GitHubUser> users = new ArrayList<>();
+
+        for(GitHubUsers.Datum item : gitHubUsers.items) {
+            GitHubUser user = new GitHubUser(item.login, item.type, item.avatarUrl, item.url, item.score);
+            users.add(user);
+        }
+
+        return users;
     }
 }

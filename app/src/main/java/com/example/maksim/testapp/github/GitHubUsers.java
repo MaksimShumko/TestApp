@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Maksim on 2017-08-28.
  */
 
-public class MultipleResource {
+public class GitHubUsers {
     @SerializedName("total_count")
     @Expose
     public Integer totalCount;

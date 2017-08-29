@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.menu_execute_git_hub:
-                InitRetrofit init = new InitRetrofit();
+                //InitRetrofit init = new InitRetrofit();
                 break;
             default:
         }
