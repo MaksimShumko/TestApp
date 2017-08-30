@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.github;
+package com.example.maksim.testapp.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -18,10 +18,9 @@ public class GitHubUsers {
     public Boolean incompleteResults;
     @SerializedName("items")
     @Expose
-    public List<Datum> items = null;
+    public List<User> items = null;
 
-    public class Datum {
-
+    public class User {
         @SerializedName("login")
         @Expose
         public String login;
@@ -76,6 +75,5 @@ public class GitHubUsers {
         @SerializedName("score")
         @Expose
         public Double score;
-
     }
 }

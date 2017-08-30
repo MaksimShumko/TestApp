@@ -15,8 +15,6 @@ import android.view.MenuItem;
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.fragments.DetailsFragment;
 import com.example.maksim.testapp.fragments.ListFragment;
-import com.example.maksim.testapp.github.InitRetrofit;
-import com.example.maksim.testapp.models.GitHubUser;
 
 public class MainActivity extends AppCompatActivity
         implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
@@ -25,7 +23,7 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private ActionBar actionBar;
     private boolean isLandTablet;
-    private GitHubUser savedGitHubUserState;
+    private String savedGitHubUserState;
     private Parcelable savedRecyclerLayoutState;
 
     @Override
@@ -48,7 +46,7 @@ public class MainActivity extends AppCompatActivity
             savedRecyclerLayoutState = savedInstanceState
                     .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
             savedGitHubUserState = savedInstanceState
-                    .getParcelable(DetailsFragment.SELECTED_MODEL);
+                    .getString(DetailsFragment.SELECTED_MODEL);
         }
 
         if (savedInstanceState == null && !isLandTablet) {
@@ -120,8 +118,8 @@ public class MainActivity extends AppCompatActivity
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
                 .findFragmentById(R.id.details_fragment);
         if (detailsFragment != null) {
-            GitHubUser savedGitHubUserState = detailsFragment.getGitHubUser();
-            outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedGitHubUserState);
+            String savedGitHubUserState = detailsFragment.getGitHubUser();
+            outState.putString(DetailsFragment.SELECTED_MODEL, savedGitHubUserState);
         }
     }
 
@@ -135,7 +133,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
-            outState.putParcelable(DetailsFragment.SELECTED_MODEL, savedGitHubUserState);
+            outState.putString(DetailsFragment.SELECTED_MODEL, savedGitHubUserState);
         }
     }
 
@@ -159,7 +157,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.menu_execute_git_hub:
-                //InitRetrofit init = new InitRetrofit();
+                //ExecuteRequest init = new ExecuteRequest();
                 break;
             default:
         }
@@ -225,17 +223,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(GitHubUser gitHubUser) {
+    public void onListFragmentInteraction(String userLogin) {
         Log.e(LOG, "onListFragmentInteraction");
-        savedGitHubUserState = gitHubUser;
-        onItemSelected(gitHubUser);
+        savedGitHubUserState = userLogin;
+        onItemSelected(userLogin);
     }
 
-    private void onItemSelected(GitHubUser gitHubUser) {
+    @Override
+    public void setFirstElementOfList(String userLogin) {
+        DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
+                .findFragmentById(R.id.details_fragment);
+        if (detailsFragment != null && isLandTablet)
+            detailsFragment.updateContent(userLogin);
+    }
+
+    private void onItemSelected(String userLogin) {
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
                 .findFragmentById(R.id.details_fragment);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(DetailsFragment.SELECTED_MODEL, gitHubUser);
+        bundle.putString(DetailsFragment.SELECTED_MODEL, userLogin);
         if (detailsFragment == null || !isLandTablet) {
             ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.fragmentContainer);
             if(listFragment != null)
@@ -247,7 +253,7 @@ public class MainActivity extends AppCompatActivity
 
             setActionBarTitle(getString(R.string.menu_title_details));
         } else {
-            detailsFragment.updateContent(gitHubUser);
+            detailsFragment.updateContent(userLogin);
         }
     }
 }

@@ -15,10 +15,7 @@ import android.view.ViewGroup;
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.adapters.RecyclerViewAdapter;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
-import com.example.maksim.testapp.models.GitHubUser;
 import com.example.maksim.testapp.presenters.ModelListPresenter;
-
-import java.util.List;
 
 
 public class ListFragment extends Fragment implements ModelListViewContract.View{
@@ -40,6 +37,7 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
         Log.e(LOG, "onCreate");
         super.onCreate(savedInstanceState);
         presenter = new ModelListPresenter(this);
+        presenter.executeRequest("Maksim");
         Bundle bundle = getArguments();
         if(bundle != null)
             setSavedRecyclerLayoutState(bundle.getParcelable(RECYCLER_LAYOUT_STATE));
@@ -56,7 +54,7 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
         recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new RecyclerViewAdapter(getActivity(), presenter.getAllModels());
+        adapter = new RecyclerViewAdapter(getActivity(), presenter.getUsers());
         adapter.setOnItemClickListener(presenter);
         recyclerView.setAdapter(adapter);
 
@@ -102,22 +100,19 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     }
 
     @Override
-    public void showView(List<GitHubUser> elements) {
-
-    }
-
-    @Override
     public void notifyDataSetChanged() {
-        adapter.updateElements(presenter.getAllModels());
+        adapter.updateElements(presenter.getUsers());
         adapter.notifyDataSetChanged();
+        onListFragmentInteractionListener.setFirstElementOfList(presenter.getUsers().get(0).login);
     }
 
     @Override
-    public void onItemClick(GitHubUser gitHubUser) {
-        onListFragmentInteractionListener.onListFragmentInteraction(gitHubUser);
+    public void onItemClick(String userLogin) {
+        onListFragmentInteractionListener.onListFragmentInteraction(userLogin);
     }
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(GitHubUser gitHubUser);
+        void onListFragmentInteraction(String userLogin);
+        void setFirstElementOfList(String userLogin);
     }
 }

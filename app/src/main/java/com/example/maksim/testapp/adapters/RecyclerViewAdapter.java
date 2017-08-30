@@ -6,25 +6,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
-import com.example.maksim.testapp.models.GitHubUser;
+import com.example.maksim.testapp.models.GitHubUsers;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private final String LOG_TAG = "RecyclerViewAdapter";
-    private List<GitHubUser> elements;
+    private List<GitHubUsers.User> elements;
     private ModelListViewContract.OnItemClickListener listener;
     private Context context;
 
-    public RecyclerViewAdapter(Context context, List<GitHubUser> elements) {
+    public RecyclerViewAdapter(Context context, List<GitHubUsers.User> elements) {
         Log.e(LOG_TAG, "RecyclerViewAdapter");
 
         this.context = context;
@@ -36,7 +34,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.listener = listener;
     }
 
-    public void updateElements(List<GitHubUser> elements) {
+    public void updateElements(List<GitHubUsers.User> elements) {
         this.elements = elements;
     }
 
@@ -52,18 +50,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         Log.e(LOG_TAG, "onBindViewHolder");
         if(holder != null) {
-            final GitHubUser element = elements.get(position);
-            holder.login.setText(element.getLogin());
-            holder.name.setText(element.getName());
+            final GitHubUsers.User element = elements.get(position);
+            holder.login.setText(element.login);
+            holder.name.setText(element.eventsUrl);
             Picasso.with(context)
-                    .load(element.getAvatarUrl())
+                    .load(element.avatarUrl)
                     .into(holder.avatar);
-            holder.score.setText(String.valueOf(element.getScore()));
+            holder.score.setText(String.valueOf(element.score));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null)
-                        listener.onItemClick(element);
+                        listener.onItemClick(element.login);
                 }
             });
         }

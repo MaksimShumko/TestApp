@@ -9,27 +9,30 @@ import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.contracts.ModelFormViewContract;
-import com.example.maksim.testapp.models.GitHubUser;
-import com.example.maksim.testapp.presenters.ModelFormPresenter;
+import com.example.maksim.testapp.models.GitHubUserDescription;
+import com.example.maksim.testapp.presenters.ModelDescriptionPresenter;
 
 public class DetailsFragment extends Fragment implements ModelFormViewContract.View {
     public static final String SELECTED_MODEL = "SELECTED_MODEL";
     private TextView textView;
-    private GitHubUser gitHubUser;
+    private String userLogin;
+    private GitHubUserDescription gitHubUserDescription;
     private ModelFormViewContract.Presenter presenter;
 
     public DetailsFragment() {
-        presenter = new ModelFormPresenter(this);
+        presenter = new ModelDescriptionPresenter(this);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        if(bundle != null)
-            gitHubUser = bundle.getParcelable(SELECTED_MODEL);
-        else
-            gitHubUser = presenter.getModel(0);
+        if(bundle != null) {
+            userLogin = bundle.getString(SELECTED_MODEL);
+            if(userLogin != null) {
+                presenter.executeRequest(userLogin);
+            }
+        }
     }
 
     @Override
@@ -37,25 +40,26 @@ public class DetailsFragment extends Fragment implements ModelFormViewContract.V
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         textView = (TextView) view.findViewById(R.id.textView);
-        if(gitHubUser != null)
-            textView.setText(gitHubUser.getLogin() + " " + gitHubUser.getName());
+        if (gitHubUserDescription != null)
+            textView.setText(gitHubUserDescription.login + " " + gitHubUserDescription.name);
         return view;
     }
 
     @Override
-    public void onItemClick(int position) {
-
+    public void updateView(GitHubUserDescription gitHubUserDescription) {
+        this.gitHubUserDescription = gitHubUserDescription;
+        if (gitHubUserDescription != null && textView != null)
+            textView.setText(gitHubUserDescription.login + " " + gitHubUserDescription.name);
     }
 
-    public GitHubUser getGitHubUser() {
-        return gitHubUser;
+    public String getGitHubUser() {
+        return userLogin;
     }
 
-    public void updateContent(GitHubUser gitHubUser) {
-        if(gitHubUser != null) {
-            this.gitHubUser = gitHubUser;
-            if(textView != null)
-                textView.setText(this.gitHubUser.getLogin() + " " + this.gitHubUser.getName());
-        }
+    public void updateContent(String userLogin) {
+        this.userLogin = userLogin;
+        presenter.executeRequest(userLogin);
+        if(textView != null)
+            textView.setText("");
     }
 }

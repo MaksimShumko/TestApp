@@ -1,18 +1,23 @@
 package com.example.maksim.testapp.contracts;
 
-import com.example.maksim.testapp.models.GitHubUser;
+import com.example.maksim.testapp.models.GitHubUserDescription;
+
 
 /**
  * Created by Maksim on 2017-07-16.
  */
 
 public class ModelFormViewContract {
+    public interface Model {
+        void executeGetUserDescription(String userLogin);
+    }
+
     public interface View {
-        void onItemClick(int position);
+        void updateView(GitHubUserDescription gitHubUserDescription);
     }
 
     public interface Presenter {
-        GitHubUser getModel(int position);
-        void onItemClick(int position);
+        void executeRequest(String userLogin);
+        void onExecuteResult(GitHubUserDescription gitHubUserDescription);
     }
 }

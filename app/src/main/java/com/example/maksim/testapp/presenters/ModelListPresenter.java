@@ -3,8 +3,8 @@ package com.example.maksim.testapp.presenters;
 import android.util.Log;
 
 import com.example.maksim.testapp.contracts.ModelListViewContract;
-import com.example.maksim.testapp.models.GitHubUser;
-import com.example.maksim.testapp.models.Model;
+import com.example.maksim.testapp.models.GitHubUsers;
+import com.example.maksim.testapp.models.ListModel;
 
 import java.util.List;
 
@@ -20,18 +20,18 @@ public class ModelListPresenter implements ModelListViewContract.Presenter,
 
     public ModelListPresenter(ModelListViewContract.View view) {
         this.view = view;
-        model = Model.getInstance(this);
+        model = new ListModel(this);
     }
 
     @Override
-    public void loadModels() {
+    public void executeRequest(String userLogin) {
         if(model != null) {
-            model.getAllGitHubUsers();
+            model.executeGetUsers(userLogin);
         }
     }
 
     @Override
-    public List<GitHubUser> getAllModels() {
+    public List<GitHubUsers.User> getUsers() {
         if(model != null) {
             return model.getAllGitHubUsers();
         }
@@ -39,14 +39,14 @@ public class ModelListPresenter implements ModelListViewContract.Presenter,
     }
 
     @Override
-    public void notifyDataSetChanged() {
+    public void onExecuteResult(List<GitHubUsers.User> user) {
         view.notifyDataSetChanged();
     }
 
     @Override
-    public void onItemClick(GitHubUser gitHubUser) {
+    public void onItemClick(String userLogin) {
         Log.e(LOG_TAG, "OnItemClick");
         if(view != null)
-            view.onItemClick(gitHubUser);
+            view.onItemClick(userLogin);
     }
 }
