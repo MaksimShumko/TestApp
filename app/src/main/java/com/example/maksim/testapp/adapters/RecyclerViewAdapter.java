@@ -56,7 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Picasso.with(context)
                     .load(element.avatarUrl)
                     .into(holder.avatar);
-            holder.score.setText(String.valueOf(element.score));
+            holder.score.setText(String.valueOf(element.id));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

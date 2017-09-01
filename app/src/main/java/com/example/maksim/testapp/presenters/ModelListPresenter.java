@@ -24,9 +24,16 @@ public class ModelListPresenter implements ModelListViewContract.Presenter,
     }
 
     @Override
-    public void executeRequest(String userLogin) {
+    public void executeSearchRequest(String userLogin) {
         if(model != null) {
-            model.executeGetUsers(userLogin);
+            model.executeSearchUsers(userLogin);
+        }
+    }
+
+    @Override
+    public void executeGetUsersRequest() {
+        if(model != null) {
+            model.executeGetUsers();
         }
     }
 

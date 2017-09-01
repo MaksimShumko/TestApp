@@ -2,6 +2,7 @@ package com.example.maksim.testapp.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,10 +18,14 @@ import com.example.maksim.testapp.adapters.RecyclerViewAdapter;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
 import com.example.maksim.testapp.presenters.ModelListPresenter;
 
+import static android.content.Context.MODE_PRIVATE;
 
-public class ListFragment extends Fragment implements ModelListViewContract.View{
+
+public class ListFragment extends Fragment implements ModelListViewContract.View {
 
     public static final String RECYCLER_LAYOUT_STATE = "RECYCLER_LAYOUT_STATE";
+    public static final String PREFERENCE_SEARCH_QUERY = "PREFERENCE_SEARCH_QUERY";
+    public static final String SEARCH_QUERY = "SEARCH_QUERY";
     private final String LOG = "ListFragment";
     private ModelListViewContract.Presenter presenter;
     private RecyclerViewAdapter adapter;
@@ -37,7 +42,9 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
         Log.e(LOG, "onCreate");
         super.onCreate(savedInstanceState);
         presenter = new ModelListPresenter(this);
-        presenter.executeRequest("Maksim");
+
+        executeRequest();
+
         Bundle bundle = getArguments();
         if(bundle != null)
             setSavedRecyclerLayoutState(bundle.getParcelable(RECYCLER_LAYOUT_STATE));
@@ -97,6 +104,19 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
 
     public void setSavedRecyclerLayoutState(Parcelable savedRecyclerLayoutState) {
         this.savedRecyclerLayoutState = savedRecyclerLayoutState;
+    }
+
+    public void executeRequest() {
+        if (presenter != null) {
+            SharedPreferences prefs = getActivity()
+                    .getSharedPreferences(PREFERENCE_SEARCH_QUERY, MODE_PRIVATE);
+            String searchQuery = prefs.getString(SEARCH_QUERY, null);
+
+            if (searchQuery != null && !searchQuery.isEmpty())
+                presenter.executeSearchRequest(searchQuery);
+            else
+                presenter.executeGetUsersRequest();
+        }
     }
 
     @Override

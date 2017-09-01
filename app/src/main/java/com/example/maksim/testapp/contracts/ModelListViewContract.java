@@ -11,7 +11,8 @@ import java.util.List;
 public class ModelListViewContract {
     public interface Model {
         List<GitHubUsers.User> getAllGitHubUsers();
-        void executeGetUsers(String userLogin);
+        void executeSearchUsers(String userLogin);
+        void executeGetUsers();
     }
 
     public interface View {
@@ -20,7 +21,8 @@ public class ModelListViewContract {
     }
 
     public interface Presenter extends OnItemClickListener {
-        void executeRequest(String userLogin);
+        void executeSearchRequest(String userLogin);
+        void executeGetUsersRequest();
         List<GitHubUsers.User> getUsers();
         void onExecuteResult(List<GitHubUsers.User> user);
     }
