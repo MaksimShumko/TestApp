@@ -16,7 +16,10 @@ import android.view.ViewGroup;
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.adapters.RecyclerViewAdapter;
 import com.example.maksim.testapp.contracts.ModelListViewContract;
+import com.example.maksim.testapp.models.GitHubUsers;
 import com.example.maksim.testapp.presenters.ModelListPresenter;
+
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -123,7 +126,9 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     public void notifyDataSetChanged() {
         adapter.updateElements(presenter.getUsers());
         adapter.notifyDataSetChanged();
-        onListFragmentInteractionListener.setFirstElementOfList(presenter.getUsers().get(0).login);
+        List<GitHubUsers.User> users = presenter.getUsers();
+        if (users != null && users.size() > 0)
+            onListFragmentInteractionListener.setFirstElementOfList(users.get(0).login);
     }
 
     @Override

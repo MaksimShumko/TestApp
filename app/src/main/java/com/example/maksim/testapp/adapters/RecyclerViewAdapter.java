@@ -23,14 +23,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context context;
 
     public RecyclerViewAdapter(Context context, List<GitHubUsers.User> elements) {
-        Log.e(LOG_TAG, "RecyclerViewAdapter");
+        //Log.e(LOG_TAG, "RecyclerViewAdapter");
 
         this.context = context;
         this.elements = elements;
     }
 
     public void setOnItemClickListener(ModelListViewContract.OnItemClickListener listener) {
-        Log.e(LOG_TAG, "setOnItemClickListener");
+        //Log.e(LOG_TAG, "setOnItemClickListener");
         this.listener = listener;
     }
 
@@ -40,7 +40,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.e(LOG_TAG, "onCreateViewHolder");
+        //Log.e(LOG_TAG, "onCreateViewHolder");
         LayoutInflater inflater = LayoutInflater.from(context);
         View item = inflater.inflate(R.layout.list_item, parent, false);
         return new ViewHolder(item);
@@ -48,7 +48,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Log.e(LOG_TAG, "onBindViewHolder");
+        //Log.e(LOG_TAG, "onBindViewHolder");
         if(holder != null) {
             final GitHubUsers.User element = elements.get(position);
             holder.login.setText(element.login);
@@ -69,7 +69,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        Log.e(LOG_TAG, "getItemCount");
+        //Log.e(LOG_TAG, "getItemCount");
         if(elements != null)
             return elements.size();
         return 0;
@@ -84,7 +84,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         ViewHolder(View itemView) {
             super(itemView);
-            Log.e(LOG_TAG, "ViewHolder");
+            //Log.e(LOG_TAG, "ViewHolder");
             this.itemView = itemView;
             login = (TextView) itemView.findViewById(R.id.listItemLogin);
             name = (TextView) itemView.findViewById(R.id.listItemName);

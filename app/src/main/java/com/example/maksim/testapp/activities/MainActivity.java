@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences prefs =
                 getSharedPreferences(ListFragment.PREFERENCE_SEARCH_QUERY, MODE_PRIVATE);
         String searchQuery = prefs.getString(ListFragment.SEARCH_QUERY, "");
-        editText.setText(searchQuery);
+        editText.append(searchQuery);
 
         dialogBuilder.setTitle(getString(R.string.edit_dialog_title));
         dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
