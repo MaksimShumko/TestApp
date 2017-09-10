@@ -1,7 +1,8 @@
-package com.example.maksim.testapp.models;
+package com.example.maksim.testapp.details;
 
-import com.example.maksim.testapp.contracts.ModelFormViewContract;
-import com.example.maksim.testapp.github.ExecuteRequest;
+import com.example.maksim.testapp.details.models.GitHubUserDescription;
+import com.example.maksim.testapp.details.contracts.ModelFormViewContract;
+import com.example.maksim.testapp.github_api.ExecuteRequest;
 
 /**
  * Created by Maksim on 2017-08-30.

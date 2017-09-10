@@ -1,18 +1,18 @@
-package com.example.maksim.testapp.presenters;
+package com.example.maksim.testapp.details.presenters;
 
-import com.example.maksim.testapp.contracts.ModelFormViewContract;
-import com.example.maksim.testapp.models.GitHubUserDescription;
-import com.example.maksim.testapp.models.DescriptionModel;
+import com.example.maksim.testapp.details.contracts.ModelFormViewContract;
+import com.example.maksim.testapp.details.models.GitHubUserDescription;
+import com.example.maksim.testapp.details.DescriptionModel;
 
 /**
  * Created by Maksim on 2017-07-16.
  */
 
-public class ModelDescriptionPresenter implements ModelFormViewContract.Presenter {
+public class DetailsPresenter implements ModelFormViewContract.Presenter {
     private ModelFormViewContract.View view;
     private ModelFormViewContract.Model model;
 
-    public ModelDescriptionPresenter(ModelFormViewContract.View view) {
+    public DetailsPresenter(ModelFormViewContract.View view) {
         this.view = view;
         model = new DescriptionModel(this);
     }

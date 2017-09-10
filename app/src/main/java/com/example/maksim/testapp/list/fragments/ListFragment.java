@@ -1,6 +1,7 @@
-package com.example.maksim.testapp.fragments;
+package com.example.maksim.testapp.list.fragments;
 
 import android.app.Fragment;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,23 +15,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.adapters.RecyclerViewAdapter;
-import com.example.maksim.testapp.contracts.ModelListViewContract;
-import com.example.maksim.testapp.models.GitHubUsers;
-import com.example.maksim.testapp.presenters.ModelListPresenter;
+import com.example.maksim.testapp.list.presenters.ListPresenterInterface;
+import com.example.maksim.testapp.room.RoomSqlDatabase;
+import com.example.maksim.testapp.list.adapters.RecyclerViewAdapter;
+import com.example.maksim.testapp.list.data.GitHubUser;
+import com.example.maksim.testapp.list.presenters.ListPresenter;
 
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class ListFragment extends Fragment implements ModelListViewContract.View {
+public class ListFragment extends Fragment implements ViewInterface {
 
     public static final String RECYCLER_LAYOUT_STATE = "RECYCLER_LAYOUT_STATE";
     public static final String PREFERENCE_SEARCH_QUERY = "PREFERENCE_SEARCH_QUERY";
     public static final String SEARCH_QUERY = "SEARCH_QUERY";
     private final String LOG = "ListFragment";
-    private ModelListViewContract.Presenter presenter;
+    private ListPresenterInterface presenter;
     private RecyclerViewAdapter adapter;
     private OnListFragmentInteractionListener onListFragmentInteractionListener;
     private RecyclerView recyclerView;
@@ -44,7 +46,10 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     public void onCreate(Bundle savedInstanceState) {
         Log.e(LOG, "onCreate");
         super.onCreate(savedInstanceState);
-        presenter = new ModelListPresenter(this);
+
+        RoomSqlDatabase roomSqlDatabase = Room.databaseBuilder(getActivity(),
+                RoomSqlDatabase.class, "database-name").build();
+        presenter = new ListPresenter(this, roomSqlDatabase);
 
         executeRequest();
 
@@ -114,11 +119,7 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
             SharedPreferences prefs = getActivity()
                     .getSharedPreferences(PREFERENCE_SEARCH_QUERY, MODE_PRIVATE);
             String searchQuery = prefs.getString(SEARCH_QUERY, null);
-
-            if (searchQuery != null && !searchQuery.isEmpty())
-                presenter.executeSearchRequest(searchQuery);
-            else
-                presenter.executeGetUsersRequest();
+            presenter.executeSearchRequest(searchQuery);
         }
     }
 
@@ -126,7 +127,7 @@ public class ListFragment extends Fragment implements ModelListViewContract.View
     public void notifyDataSetChanged() {
         adapter.updateElements(presenter.getUsers());
         adapter.notifyDataSetChanged();
-        List<GitHubUsers.User> users = presenter.getUsers();
+        List<GitHubUser> users = presenter.getUsers();
         if (users != null && users.size() > 0)
             onListFragmentInteractionListener.setFirstElementOfList(users.get(0).login);
     }

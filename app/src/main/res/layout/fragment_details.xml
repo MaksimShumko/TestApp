@@ -4,7 +4,7 @@
     android:clickable="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:activity="com.example.maksim.testapp.fragments.DetailsFragment">
+    tools:activity="com.example.maksim.testapp.details.fragments.DetailsFragment">
 
     <TextView
         android:id="@+id/textView"

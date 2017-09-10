@@ -1,6 +1,6 @@
-package com.example.maksim.testapp.contracts;
+package com.example.maksim.testapp.details.contracts;
 
-import com.example.maksim.testapp.models.GitHubUserDescription;
+import com.example.maksim.testapp.details.models.GitHubUserDescription;
 
 
 /**

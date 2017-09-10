@@ -19,17 +19,17 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.fragments.DetailsFragment;
-import com.example.maksim.testapp.fragments.ListFragment;
+import com.example.maksim.testapp.details.fragments.DetailsFragment;
+import com.example.maksim.testapp.list.fragments.ListFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements com.example.maksim.testapp.fragments.ListFragment.OnListFragmentInteractionListener {
+        implements ListFragment.OnListFragmentInteractionListener {
 
     private final String LOG = "MainActivity";
     private FragmentManager fragmentManager;
     private ActionBar actionBar;
     private boolean isLandTablet;
-    private String savedGitHubUserState;
+    private String savedGitHubUserData;
     private Parcelable savedRecyclerLayoutState;
 
     @Override
@@ -48,17 +48,15 @@ public class MainActivity extends AppCompatActivity
         actionBar = getSupportActionBar();
         setFragmentManagerListener();
 
-        if(savedInstanceState != null) {
-            savedRecyclerLayoutState = savedInstanceState
-                    .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
-            savedGitHubUserState = savedInstanceState
-                    .getString(DetailsFragment.SELECTED_MODEL);
-        }
-
         if (savedInstanceState == null && !isLandTablet) {
             ListFragment listFragment = new ListFragment();
             startFragment(listFragment, R.id.fragmentContainer, true, false);
         } else if(savedInstanceState != null) {
+            savedRecyclerLayoutState = savedInstanceState
+                    .getParcelable(ListFragment.RECYCLER_LAYOUT_STATE);
+            savedGitHubUserData = savedInstanceState
+                    .getString(DetailsFragment.SELECTED_MODEL);
+
             if (!isLandTablet) {
                 updatePortraitTabletAndPhoneState();
             } else {
@@ -69,19 +67,28 @@ public class MainActivity extends AppCompatActivity
         setActionBarTitle();
     }
 
+    private void setFragmentManagerListener() {
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                setMenuBackButton();
+            }
+        });
+    }
+
     private void updateLandTabletState() {
         clearBackStack();
 
         ListFragment listFragment = (ListFragment) fragmentManager
-                .findFragmentById(R.id.list_fragment);
+                .findFragmentById(R.id.listFragment);
         if (listFragment != null) {
             listFragment.setSavedRecyclerLayoutState(savedRecyclerLayoutState);
         }
 
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
-                .findFragmentById(R.id.details_fragment);
+                .findFragmentById(R.id.detailsFragment);
         if (detailsFragment != null) {
-            detailsFragment.updateContent(savedGitHubUserState);
+            detailsFragment.updateContent(savedGitHubUserData);
         }
     }
 
@@ -91,7 +98,7 @@ public class MainActivity extends AppCompatActivity
             if(fragment instanceof ListFragment) {
                 ((ListFragment) fragment).setSavedRecyclerLayoutState(savedRecyclerLayoutState);
             } else if(fragment instanceof DetailsFragment) {
-                ((DetailsFragment) fragment).updateContent(savedGitHubUserState);
+                ((DetailsFragment) fragment).updateContent(savedGitHubUserData);
             }
         } else {
             Bundle bundle = new Bundle();
@@ -115,14 +122,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void saveStateFromLandTablet(Bundle outState) {
-        ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.list_fragment);
+        ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
         if (listFragment != null) {
             savedRecyclerLayoutState = listFragment.getSavedRecyclerLayoutState();
         }
         outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
 
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
-                .findFragmentById(R.id.details_fragment);
+                .findFragmentById(R.id.detailsFragment);
         if (detailsFragment != null) {
             String savedGitHubUserState = detailsFragment.getGitHubUser();
             outState.putString(DetailsFragment.SELECTED_MODEL, savedGitHubUserState);
@@ -135,11 +142,11 @@ public class MainActivity extends AppCompatActivity
             if(fragment instanceof ListFragment) {
                 savedRecyclerLayoutState = ((ListFragment) fragment).getSavedRecyclerLayoutState();
             } else if(fragment instanceof DetailsFragment) {
-                savedGitHubUserState = ((DetailsFragment) fragment).getGitHubUser();
+                savedGitHubUserData = ((DetailsFragment) fragment).getGitHubUser();
             }
 
             outState.putParcelable(ListFragment.RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
-            outState.putString(DetailsFragment.SELECTED_MODEL, savedGitHubUserState);
+            outState.putString(DetailsFragment.SELECTED_MODEL, savedGitHubUserData);
         }
     }
 
@@ -205,23 +212,14 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
 
         ListFragment listFragment = (ListFragment) fragmentManager
-                .findFragmentById(R.id.list_fragment);
+                .findFragmentById(R.id.listFragment);
         if (listFragment == null) {
             listFragment = (ListFragment) fragmentManager
-                    .findFragmentById(R.id.fragmentContainer);
+                    .findFragmentById(R.id.listFragment);
         }
 
         if (listFragment != null)
             listFragment.executeRequest();
-    }
-
-    private void setFragmentManagerListener() {
-        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                setMenuBackButton();
-            }
-        });
     }
 
     private void setMenuBackButton() {
@@ -276,25 +274,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(String userLogin) {
         Log.e(LOG, "onListFragmentInteraction");
-        savedGitHubUserState = userLogin;
+        savedGitHubUserData = userLogin;
         onItemSelected(userLogin);
     }
 
     @Override
     public void setFirstElementOfList(String userLogin) {
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
-                .findFragmentById(R.id.details_fragment);
+                .findFragmentById(R.id.detailsFragment);
         if (detailsFragment != null && isLandTablet)
             detailsFragment.updateContent(userLogin);
     }
 
     private void onItemSelected(String userLogin) {
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
-                .findFragmentById(R.id.details_fragment);
+                .findFragmentById(R.id.detailsFragment);
         Bundle bundle = new Bundle();
         bundle.putString(DetailsFragment.SELECTED_MODEL, userLogin);
         if (detailsFragment == null || !isLandTablet) {
-            ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.fragmentContainer);
+            ListFragment listFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
             if(listFragment != null)
                 savedRecyclerLayoutState = listFragment.getSavedRecyclerLayoutState();
 

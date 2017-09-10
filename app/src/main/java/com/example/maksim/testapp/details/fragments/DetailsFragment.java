@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.fragments;
+package com.example.maksim.testapp.details.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.contracts.ModelFormViewContract;
-import com.example.maksim.testapp.models.GitHubUserDescription;
-import com.example.maksim.testapp.presenters.ModelDescriptionPresenter;
+import com.example.maksim.testapp.details.contracts.ModelFormViewContract;
+import com.example.maksim.testapp.details.models.GitHubUserDescription;
+import com.example.maksim.testapp.details.presenters.DetailsPresenter;
 
 public class DetailsFragment extends Fragment implements ModelFormViewContract.View {
     public static final String SELECTED_MODEL = "SELECTED_MODEL";
@@ -20,12 +20,13 @@ public class DetailsFragment extends Fragment implements ModelFormViewContract.V
     private ModelFormViewContract.Presenter presenter;
 
     public DetailsFragment() {
-        presenter = new ModelDescriptionPresenter(this);
+        presenter = new DetailsPresenter(this);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Bundle bundle = getArguments();
         if(bundle != null) {
             userLogin = bundle.getString(SELECTED_MODEL);

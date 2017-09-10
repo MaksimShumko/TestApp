@@ -1,7 +1,8 @@
-package com.example.maksim.testapp.github;
+package com.example.maksim.testapp.github_api;
 
-import com.example.maksim.testapp.models.GitHubUserDescription;
-import com.example.maksim.testapp.models.GitHubUsers;
+import com.example.maksim.testapp.details.models.GitHubUserDescription;
+import com.example.maksim.testapp.list.data.GitHubUser;
+import com.example.maksim.testapp.list.data.GitHubUsers;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface ApiInterface {
     Call<GitHubUsers> searchUsers(@Query("q") String userName);
 
     @GET("/users")
-    Call<List<GitHubUsers.User>> getUsers();
+    Call<List<GitHubUser>> getUsers();
 
     @GET("/users/{userLogin}")
     Call<GitHubUserDescription> getUserDescription(@Path("userLogin") String userLogin);

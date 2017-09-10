@@ -1,7 +1,8 @@
-package com.example.maksim.testapp.github;
+package com.example.maksim.testapp.github_api;
 
-import com.example.maksim.testapp.models.GitHubUserDescription;
-import com.example.maksim.testapp.models.GitHubUsers;
+import com.example.maksim.testapp.details.models.GitHubUserDescription;
+import com.example.maksim.testapp.list.data.GitHubUser;
+import com.example.maksim.testapp.list.data.GitHubUsers;
 
 import java.util.List;
 
@@ -35,17 +36,17 @@ public class ExecuteRequest {
         });
     }
 
-    public void getUsers(final OnUserLoaderCompleted<List<GitHubUsers.User>> listener) {
-        Call<List<GitHubUsers.User>> call = apiInterface.getUsers();
-        call.enqueue(new Callback<List<GitHubUsers.User>>() {
+    public void getUsers(final OnUserLoaderCompleted<List<GitHubUser>> listener) {
+        Call<List<GitHubUser>> call = apiInterface.getUsers();
+        call.enqueue(new Callback<List<GitHubUser>>() {
             @Override
-            public void onResponse(Call<List<GitHubUsers.User>> call, Response<List<GitHubUsers.User>> response) {
-                List<GitHubUsers.User> resource = response.body();
+            public void onResponse(Call<List<GitHubUser>> call, Response<List<GitHubUser>> response) {
+                List<GitHubUser> resource = response.body();
                 listener.onUserLoaderCompleted(resource);
             }
 
             @Override
-            public void onFailure(Call<List<GitHubUsers.User>> call, Throwable t) {
+            public void onFailure(Call<List<GitHubUser>> call, Throwable t) {
                 call.cancel();
             }
         });

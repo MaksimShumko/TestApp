@@ -1,18 +1,23 @@
-package com.example.maksim.testapp.models;
+package com.example.maksim.testapp.list.data;
+
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Maksim on 2017-08-30.
+ * Created by Maksim on 2017-09-10.
  */
 
-public class GitHubUserDescription {
+@Entity
+public class GitHubUser {
     @SerializedName("login")
     @Expose
     public String login;
     @SerializedName("id")
     @Expose
+    @PrimaryKey(autoGenerate = true)
     public Integer id;
     @SerializedName("avatar_url")
     @Expose
@@ -59,43 +64,7 @@ public class GitHubUserDescription {
     @SerializedName("site_admin")
     @Expose
     public Boolean siteAdmin;
-    @SerializedName("name")
+    @SerializedName("score")
     @Expose
-    public String name;
-    @SerializedName("company")
-    @Expose
-    public Object company;
-    @SerializedName("blog")
-    @Expose
-    public String blog;
-    @SerializedName("location")
-    @Expose
-    public Object location;
-    @SerializedName("email")
-    @Expose
-    public Object email;
-    @SerializedName("hireable")
-    @Expose
-    public Object hireable;
-    @SerializedName("bio")
-    @Expose
-    public String bio;
-    @SerializedName("public_repos")
-    @Expose
-    public Integer publicRepos;
-    @SerializedName("public_gists")
-    @Expose
-    public Integer publicGists;
-    @SerializedName("followers")
-    @Expose
-    public Integer followers;
-    @SerializedName("following")
-    @Expose
-    public Integer following;
-    @SerializedName("created_at")
-    @Expose
-    public String createdAt;
-    @SerializedName("updated_at")
-    @Expose
-    public String updatedAt;
+    public Double score;
 }
