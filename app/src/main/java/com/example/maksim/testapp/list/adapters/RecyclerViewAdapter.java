@@ -51,9 +51,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         if(holder != null) {
             final GitHubUser element = elements.get(position);
             holder.login.setText(element.login);
-            holder.name.setText(element.eventsUrl);
+            holder.name.setText(element.eventsurl);
             Picasso.with(context)
-                    .load(element.avatarUrl)
+                    .load(element.avatarurl)
                     .into(holder.avatar);
             holder.score.setText(String.valueOf(element.id));
             holder.itemView.setOnClickListener(new View.OnClickListener() {

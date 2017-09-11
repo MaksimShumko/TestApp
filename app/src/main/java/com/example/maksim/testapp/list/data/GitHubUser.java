@@ -10,60 +10,60 @@ import com.google.gson.annotations.SerializedName;
  * Created by Maksim on 2017-09-10.
  */
 
-@Entity
+@Entity(tableName = "GitHubUser")
 public class GitHubUser {
     @SerializedName("login")
     @Expose
     public String login;
     @SerializedName("id")
     @Expose
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     public Integer id;
     @SerializedName("avatar_url")
     @Expose
-    public String avatarUrl;
+    public String avatarurl;
     @SerializedName("gravatar_id")
     @Expose
-    public String gravatarId;
+    public String gravatarid;
     @SerializedName("url")
     @Expose
     public String url;
     @SerializedName("html_url")
     @Expose
-    public String htmlUrl;
+    public String htmlurl;
     @SerializedName("followers_url")
     @Expose
-    public String followersUrl;
+    public String followersurl;
     @SerializedName("following_url")
     @Expose
-    public String followingUrl;
+    public String followingurl;
     @SerializedName("gists_url")
     @Expose
-    public String gistsUrl;
+    public String gistsurl;
     @SerializedName("starred_url")
     @Expose
-    public String starredUrl;
+    public String starredurl;
     @SerializedName("subscriptions_url")
     @Expose
-    public String subscriptionsUrl;
+    public String subscriptionsurl;
     @SerializedName("organizations_url")
     @Expose
-    public String organizationsUrl;
+    public String organizationsurl;
     @SerializedName("repos_url")
     @Expose
-    public String reposUrl;
+    public String reposurl;
     @SerializedName("events_url")
     @Expose
-    public String eventsUrl;
+    public String eventsurl;
     @SerializedName("received_events_url")
     @Expose
-    public String receivedEventsUrl;
+    public String receivedeventsurl;
     @SerializedName("type")
     @Expose
     public String type;
     @SerializedName("site_admin")
     @Expose
-    public Boolean siteAdmin;
+    public Boolean siteadmin;
     @SerializedName("score")
     @Expose
     public Double score;

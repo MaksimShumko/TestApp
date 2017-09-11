@@ -48,10 +48,8 @@ public class ListFragment extends Fragment implements ViewInterface {
         super.onCreate(savedInstanceState);
 
         RoomSqlDatabase roomSqlDatabase = Room.databaseBuilder(getActivity(),
-                RoomSqlDatabase.class, "database-name").build();
+                RoomSqlDatabase.class, RoomSqlDatabase.DATABASE_NAME_GIT_HUB).build();
         presenter = new ListPresenter(this, roomSqlDatabase);
-
-        executeRequest();
 
         Bundle bundle = getArguments();
         if(bundle != null)
@@ -116,10 +114,7 @@ public class ListFragment extends Fragment implements ViewInterface {
 
     public void executeRequest() {
         if (presenter != null) {
-            SharedPreferences prefs = getActivity()
-                    .getSharedPreferences(PREFERENCE_SEARCH_QUERY, MODE_PRIVATE);
-            String searchQuery = prefs.getString(SEARCH_QUERY, null);
-            presenter.executeSearchRequest(searchQuery);
+            presenter.executeSearchRequest(getPrefSearchQuery());
         }
     }
 
@@ -135,6 +130,13 @@ public class ListFragment extends Fragment implements ViewInterface {
     @Override
     public void onItemClick(String userLogin) {
         onListFragmentInteractionListener.onListFragmentInteraction(userLogin);
+    }
+
+    @Override
+    public String getPrefSearchQuery() {
+        SharedPreferences prefs = getActivity()
+                .getSharedPreferences(PREFERENCE_SEARCH_QUERY, MODE_PRIVATE);
+        return prefs.getString(SEARCH_QUERY, null);
     }
 
     public interface OnListFragmentInteractionListener {

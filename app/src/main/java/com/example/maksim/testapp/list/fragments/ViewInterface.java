@@ -7,4 +7,5 @@ package com.example.maksim.testapp.list.fragments;
 public interface ViewInterface {
     void notifyDataSetChanged();
     void onItemClick(String userLogin);
+    String getPrefSearchQuery();
 }

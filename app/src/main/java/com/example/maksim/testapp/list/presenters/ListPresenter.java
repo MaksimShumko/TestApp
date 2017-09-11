@@ -21,6 +21,7 @@ public class ListPresenter implements ListPresenterInterface {
     public ListPresenter(ViewInterface view, RoomSqlDatabase roomSqlDatabase) {
         this.view = view;
         model = new ListModel(this, roomSqlDatabase);
+        model.setPrefSearchQuery(view.getPrefSearchQuery());
     }
 
     @Override

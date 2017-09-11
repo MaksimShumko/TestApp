@@ -23,10 +23,12 @@ public class ListModel implements LocalRepositoryListener {
     private LocalGetAllUsers localGetAllUsers;
     private RemoteListStore remoteListStore;
     private GitHubUserDao gitHubUserDao;
+    private String prefSearchQuery;
 
     public ListModel(ListPresenterInterface presenter, RoomSqlDatabase roomSqlDatabase) {
         this.presenter = presenter;
         this.gitHubUserDao = roomSqlDatabase.getUserDao();
+        new LocalGetAllUsers(this, gitHubUserDao).execute();
         remoteListStore = new RemoteListStore();
     }
 
@@ -36,9 +38,9 @@ public class ListModel implements LocalRepositoryListener {
         return gitHubUsers;
     }
 
-    public void executeSearchUsers(String userName) {
-        if (userName != null && !userName.isEmpty())
-            new ExecuteRequest().searchUsers(userName, gitHubUsersListener);
+    public void executeSearchUsers(String searchQuery) {
+        if (searchQuery != null && !searchQuery.isEmpty())
+            new ExecuteRequest().searchUsers(searchQuery, gitHubUsersListener);
         else
             new ExecuteRequest().getUsers(listOfUsersListener);
     }
@@ -67,6 +69,15 @@ public class ListModel implements LocalRepositoryListener {
 
     @Override
     public void onUsersLoaded(List<GitHubUser> users) {
-        onUserLoaderCompleted(users);
+        if (users == null)
+            executeSearchUsers(prefSearchQuery);
+        else {
+            this.gitHubUsers = users;
+            presenter.onResponse(users);
+        }
+    }
+
+    public void setPrefSearchQuery(String prefSearchQuery) {
+        this.prefSearchQuery = prefSearchQuery;
     }
 }
