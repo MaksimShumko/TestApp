@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.list.models;
+package com.example.maksim.testapp.list.model.repository;
 
 import com.example.maksim.testapp.list.data.GitHubUser;
 

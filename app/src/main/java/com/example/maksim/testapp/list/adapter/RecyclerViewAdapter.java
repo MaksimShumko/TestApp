@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.list.adapters;
+package com.example.maksim.testapp.list.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.list.data.GitHubUser;
-import com.example.maksim.testapp.list.presenters.ListPresenterInterface;
+import com.example.maksim.testapp.list.fragment.OnItemClickListener;
+import com.example.maksim.testapp.list.presenter.ListViewPresenterInterface;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -18,19 +19,13 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private final String LOG_TAG = "RecyclerViewAdapter";
     private List<GitHubUser> elements;
-    private ListPresenterInterface presenter;
+    private OnItemClickListener onItemClickListener;
     private Context context;
 
-    public RecyclerViewAdapter(Context context, List<GitHubUser> elements) {
+    public RecyclerViewAdapter(Context context, OnItemClickListener onItemClickListener) {
         //Log.e(LOG_TAG, "RecyclerViewAdapter");
-
         this.context = context;
-        this.elements = elements;
-    }
-
-    public void setOnItemClickListener(ListPresenterInterface presenter) {
-        //Log.e(LOG_TAG, "setOnItemClickListener");
-        this.presenter = presenter;
+        this.onItemClickListener = onItemClickListener;
     }
 
     public void updateElements(List<GitHubUser> elements) {
@@ -46,9 +41,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         //Log.e(LOG_TAG, "onBindViewHolder");
-        if(holder != null) {
+        if(holder != null && elements != null) {
             final GitHubUser element = elements.get(position);
             holder.login.setText(element.login);
             holder.name.setText(element.eventsurl);
@@ -59,8 +54,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(presenter != null)
-                        presenter.onItemClick(element.login);
+                    if(onItemClickListener != null)
+                        onItemClickListener.onItemClick(element.login);
                 }
             });
         }

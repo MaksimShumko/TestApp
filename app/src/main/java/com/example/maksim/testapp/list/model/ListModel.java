@@ -1,16 +1,15 @@
-package com.example.maksim.testapp.list.models;
+package com.example.maksim.testapp.list.model;
 
-import com.example.maksim.testapp.list.models.repository.LocalGetAllUsers;
-import com.example.maksim.testapp.list.models.repository.LocalInsertUsers;
-import com.example.maksim.testapp.list.models.repository.RemoteListStore;
-import com.example.maksim.testapp.list.presenters.ListPresenterInterface;
+import com.example.maksim.testapp.list.model.repository.LocalGetAllUsers;
+import com.example.maksim.testapp.list.model.repository.LocalInsertUsers;
+import com.example.maksim.testapp.list.model.repository.LocalRepositoryListener;
+import com.example.maksim.testapp.list.presenter.ModelListener;
 import com.example.maksim.testapp.room.GitHubUserDao;
 import com.example.maksim.testapp.room.RoomSqlDatabase;
 import com.example.maksim.testapp.list.data.GitHubUser;
 import com.example.maksim.testapp.list.data.GitHubUsers;
 import com.example.maksim.testapp.github_api.ExecuteRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,24 +17,16 @@ import java.util.List;
  */
 
 public class ListModel implements LocalRepositoryListener {
-    private List<GitHubUser> gitHubUsers = new ArrayList<>();
-    private ListPresenterInterface presenter;
-    private LocalGetAllUsers localGetAllUsers;
-    private RemoteListStore remoteListStore;
+    private ModelListener modelListener;
     private GitHubUserDao gitHubUserDao;
     private String prefSearchQuery;
 
-    public ListModel(ListPresenterInterface presenter, RoomSqlDatabase roomSqlDatabase) {
-        this.presenter = presenter;
+    public ListModel(ModelListener modelListener, RoomSqlDatabase roomSqlDatabase, String prefSearchQuery) {
+        this.modelListener = modelListener;
         this.gitHubUserDao = roomSqlDatabase.getUserDao();
-        new LocalGetAllUsers(this, gitHubUserDao).execute();
-        remoteListStore = new RemoteListStore();
-    }
+        this.prefSearchQuery = prefSearchQuery;
 
-    public List<GitHubUser> getAllGitHubUsers() {
-        if (gitHubUsers.size() > 0)
-            new LocalGetAllUsers(this, gitHubUserDao).execute();
-        return gitHubUsers;
+        new LocalGetAllUsers(this, gitHubUserDao).execute();
     }
 
     public void executeSearchUsers(String searchQuery) {
@@ -46,9 +37,8 @@ public class ListModel implements LocalRepositoryListener {
     }
 
     private void onUserLoaderCompleted(List<GitHubUser> gitHubUsers) {
-        this.gitHubUsers = gitHubUsers;
         new LocalInsertUsers(gitHubUsers, gitHubUserDao).execute();
-        presenter.onResponse(gitHubUsers);
+        modelListener.onResponse(gitHubUsers);
     }
 
     private ExecuteRequest.OnUserLoaderCompleted<GitHubUsers> gitHubUsersListener =
@@ -69,15 +59,9 @@ public class ListModel implements LocalRepositoryListener {
 
     @Override
     public void onUsersLoaded(List<GitHubUser> users) {
-        if (users == null)
+        if (users == null || users.size() <= 0)
             executeSearchUsers(prefSearchQuery);
-        else {
-            this.gitHubUsers = users;
-            presenter.onResponse(users);
-        }
-    }
-
-    public void setPrefSearchQuery(String prefSearchQuery) {
-        this.prefSearchQuery = prefSearchQuery;
+        else
+            modelListener.onResponse(users);
     }
 }

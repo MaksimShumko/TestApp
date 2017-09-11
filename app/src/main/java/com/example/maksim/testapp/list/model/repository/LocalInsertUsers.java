@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.list.models.repository;
+package com.example.maksim.testapp.list.model.repository;
 
 import android.os.AsyncTask;
 
@@ -22,6 +22,7 @@ public class LocalInsertUsers extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... commands) {
+        gitHubUserDao.deleteAll();
         gitHubUserDao.insertUsers(gitHubUsers);
         return null;
     }

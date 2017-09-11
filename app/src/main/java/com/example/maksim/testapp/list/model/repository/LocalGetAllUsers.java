@@ -1,9 +1,8 @@
-package com.example.maksim.testapp.list.models.repository;
+package com.example.maksim.testapp.list.model.repository;
 
 import android.os.AsyncTask;
 
 import com.example.maksim.testapp.list.data.GitHubUser;
-import com.example.maksim.testapp.list.models.LocalRepositoryListener;
 import com.example.maksim.testapp.room.GitHubUserDao;
 
 import java.util.List;

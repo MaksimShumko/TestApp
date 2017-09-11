@@ -20,7 +20,7 @@ import android.widget.EditText;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.details.fragments.DetailsFragment;
-import com.example.maksim.testapp.list.fragments.ListFragment;
+import com.example.maksim.testapp.list.fragment.ListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements ListFragment.OnListFragmentInteractionListener {
@@ -215,11 +215,11 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentById(R.id.listFragment);
         if (listFragment == null) {
             listFragment = (ListFragment) fragmentManager
-                    .findFragmentById(R.id.listFragment);
+                    .findFragmentById(R.id.fragmentContainer);
         }
 
         if (listFragment != null)
-            listFragment.executeRequest();
+            listFragment.onSearchQueryChanged();
     }
 
     private void setMenuBackButton() {

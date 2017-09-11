@@ -12,5 +12,6 @@ import com.example.maksim.testapp.list.data.GitHubUser;
 @Database(entities = {GitHubUser.class}, version = 1)
 public abstract class RoomSqlDatabase extends RoomDatabase {
     public static final String DATABASE_NAME_GIT_HUB = "GIT_HUB_USERS";
+
     public abstract GitHubUserDao getUserDao();
 }

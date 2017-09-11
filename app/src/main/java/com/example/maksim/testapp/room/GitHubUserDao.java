@@ -25,6 +25,9 @@ public interface GitHubUserDao {
     @Query("SELECT * FROM GitHubUser WHERE login LIKE :login LIMIT 1")
     GitHubUser findByLogin(String login);
 
+    @Query("DELETE FROM GitHubUser")
+    void deleteAll();
+
     @Insert
     void insertUser(GitHubUser user);
 

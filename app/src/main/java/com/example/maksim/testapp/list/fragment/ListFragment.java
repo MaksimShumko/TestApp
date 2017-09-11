@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.list.fragments;
+package com.example.maksim.testapp.list.fragment;
 
 import android.app.Fragment;
 import android.arch.persistence.room.Room;
@@ -11,28 +11,30 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.list.presenters.ListPresenterInterface;
+import com.example.maksim.testapp.list.presenter.ListViewPresenter;
+import com.example.maksim.testapp.list.presenter.ListViewPresenterInterface;
 import com.example.maksim.testapp.room.RoomSqlDatabase;
-import com.example.maksim.testapp.list.adapters.RecyclerViewAdapter;
+import com.example.maksim.testapp.list.adapter.RecyclerViewAdapter;
 import com.example.maksim.testapp.list.data.GitHubUser;
-import com.example.maksim.testapp.list.presenters.ListPresenter;
 
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class ListFragment extends Fragment implements ViewInterface {
+public class ListFragment extends Fragment implements ListViewInterface, OnItemClickListener {
 
     public static final String RECYCLER_LAYOUT_STATE = "RECYCLER_LAYOUT_STATE";
     public static final String PREFERENCE_SEARCH_QUERY = "PREFERENCE_SEARCH_QUERY";
     public static final String SEARCH_QUERY = "SEARCH_QUERY";
     private final String LOG = "ListFragment";
-    private ListPresenterInterface presenter;
+    private ListViewPresenterInterface presenter;
     private RecyclerViewAdapter adapter;
     private OnListFragmentInteractionListener onListFragmentInteractionListener;
     private RecyclerView recyclerView;
@@ -49,7 +51,7 @@ public class ListFragment extends Fragment implements ViewInterface {
 
         RoomSqlDatabase roomSqlDatabase = Room.databaseBuilder(getActivity(),
                 RoomSqlDatabase.class, RoomSqlDatabase.DATABASE_NAME_GIT_HUB).build();
-        presenter = new ListPresenter(this, roomSqlDatabase);
+        presenter = new ListViewPresenter(this, roomSqlDatabase);
 
         Bundle bundle = getArguments();
         if(bundle != null)
@@ -62,32 +64,13 @@ public class ListFragment extends Fragment implements ViewInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.e(LOG, "onCreateView");
-
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new RecyclerViewAdapter(getActivity(), presenter.getUsers());
-        adapter.setOnItemClickListener(presenter);
+        adapter = new RecyclerViewAdapter(getActivity(), this);
         recyclerView.setAdapter(adapter);
-
         return view;
-    }
-
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
-        if(savedRecyclerLayoutState != null && recyclerView != null)
-            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        Parcelable savedRecyclerLayoutState = getSavedRecyclerLayoutState();
-        outState.putParcelable(RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
     }
 
     @Override
@@ -101,6 +84,13 @@ public class ListFragment extends Fragment implements ViewInterface {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Parcelable savedRecyclerLayoutState = getSavedRecyclerLayoutState();
+        outState.putParcelable(RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
+    }
+
     public Parcelable getSavedRecyclerLayoutState() {
         if(recyclerView != null) {
             return recyclerView.getLayoutManager().onSaveInstanceState();
@@ -112,24 +102,21 @@ public class ListFragment extends Fragment implements ViewInterface {
         this.savedRecyclerLayoutState = savedRecyclerLayoutState;
     }
 
-    public void executeRequest() {
+    public void onSearchQueryChanged() {
         if (presenter != null) {
-            presenter.executeSearchRequest(getPrefSearchQuery());
+            presenter.onSearchQueryChanged();
         }
     }
 
     @Override
-    public void notifyDataSetChanged() {
-        adapter.updateElements(presenter.getUsers());
+    public void onDataChanged(List<GitHubUser> gitHubUser) {
+        adapter.updateElements(gitHubUser);
         adapter.notifyDataSetChanged();
-        List<GitHubUser> users = presenter.getUsers();
-        if (users != null && users.size() > 0)
-            onListFragmentInteractionListener.setFirstElementOfList(users.get(0).login);
-    }
+        if (gitHubUser != null && gitHubUser.size() > 0)
+            onListFragmentInteractionListener.setFirstElementOfList(gitHubUser.get(0).login);
+        if(savedRecyclerLayoutState != null && recyclerView != null)
+            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
 
-    @Override
-    public void onItemClick(String userLogin) {
-        onListFragmentInteractionListener.onListFragmentInteraction(userLogin);
     }
 
     @Override
@@ -137,6 +124,11 @@ public class ListFragment extends Fragment implements ViewInterface {
         SharedPreferences prefs = getActivity()
                 .getSharedPreferences(PREFERENCE_SEARCH_QUERY, MODE_PRIVATE);
         return prefs.getString(SEARCH_QUERY, null);
+    }
+
+    @Override
+    public void onItemClick(String userLogin) {
+        onListFragmentInteractionListener.onListFragmentInteraction(userLogin);
     }
 
     public interface OnListFragmentInteractionListener {
