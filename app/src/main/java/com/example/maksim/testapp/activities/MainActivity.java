@@ -19,7 +19,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.details.fragments.DetailsFragment;
+import com.example.maksim.testapp.details.fragment.DetailsFragment;
 import com.example.maksim.testapp.list.fragment.ListFragment;
 
 public class MainActivity extends AppCompatActivity

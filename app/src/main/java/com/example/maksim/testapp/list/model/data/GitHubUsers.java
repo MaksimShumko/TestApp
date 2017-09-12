@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.list.data;
+package com.example.maksim.testapp.list.model.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

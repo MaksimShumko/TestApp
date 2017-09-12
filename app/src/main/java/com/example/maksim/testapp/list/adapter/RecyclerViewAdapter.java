@@ -9,9 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.list.data.GitHubUser;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
 import com.example.maksim.testapp.list.fragment.OnItemClickListener;
-import com.example.maksim.testapp.list.presenter.ListViewPresenterInterface;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

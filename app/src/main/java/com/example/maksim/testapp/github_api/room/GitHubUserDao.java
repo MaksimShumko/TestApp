@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.room;
+package com.example.maksim.testapp.github_api.room;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -6,7 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import com.example.maksim.testapp.list.data.GitHubUser;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
 
 import java.util.List;
 
@@ -26,10 +26,7 @@ public interface GitHubUserDao {
     GitHubUser findByLogin(String login);
 
     @Query("DELETE FROM GitHubUser")
-    void deleteAll();
-
-    @Insert
-    void insertUser(GitHubUser user);
+    void deleteUserList();
 
     @Insert
     void insertUsers(List<GitHubUser> users);
@@ -39,9 +36,6 @@ public interface GitHubUserDao {
 
     @Update
     void updateUsers(List<GitHubUser> users);
-
-    @Delete
-    void deleteUser(GitHubUser user);
 
     @Delete
     void deleteUsers(List<GitHubUser> users);

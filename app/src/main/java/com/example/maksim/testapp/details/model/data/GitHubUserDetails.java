@@ -1,4 +1,8 @@
-package com.example.maksim.testapp.details.models;
+package com.example.maksim.testapp.details.model.data;
+
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,12 +11,14 @@ import com.google.gson.annotations.SerializedName;
  * Created by Maksim on 2017-08-30.
  */
 
-public class GitHubUserDescription {
+@Entity
+public class GitHubUserDetails {
     @SerializedName("login")
     @Expose
     public String login;
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     public Integer id;
     @SerializedName("avatar_url")
     @Expose
@@ -64,18 +70,22 @@ public class GitHubUserDescription {
     public String name;
     @SerializedName("company")
     @Expose
+    @Ignore
     public Object company;
     @SerializedName("blog")
     @Expose
     public String blog;
     @SerializedName("location")
     @Expose
+    @Ignore
     public Object location;
     @SerializedName("email")
     @Expose
+    @Ignore
     public Object email;
     @SerializedName("hireable")
     @Expose
+    @Ignore
     public Object hireable;
     @SerializedName("bio")
     @Expose

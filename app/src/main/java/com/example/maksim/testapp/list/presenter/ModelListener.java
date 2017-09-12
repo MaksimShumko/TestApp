@@ -1,6 +1,6 @@
 package com.example.maksim.testapp.list.presenter;
 
-import com.example.maksim.testapp.list.data.GitHubUser;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
 
 import java.util.List;
 

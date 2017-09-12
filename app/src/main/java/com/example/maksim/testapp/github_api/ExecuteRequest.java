@@ -1,8 +1,8 @@
 package com.example.maksim.testapp.github_api;
 
-import com.example.maksim.testapp.details.models.GitHubUserDescription;
-import com.example.maksim.testapp.list.data.GitHubUser;
-import com.example.maksim.testapp.list.data.GitHubUsers;
+import com.example.maksim.testapp.details.model.data.GitHubUserDetails;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
+import com.example.maksim.testapp.list.model.data.GitHubUsers;
 
 import java.util.List;
 
@@ -52,17 +52,17 @@ public class ExecuteRequest {
         });
     }
 
-    public void getUserDescription(String userLogin, final OnUserLoaderCompleted<GitHubUserDescription> listener) {
-        Call<GitHubUserDescription> call = apiInterface.getUserDescription(userLogin);
-        call.enqueue(new Callback<GitHubUserDescription>() {
+    public void getUserDescription(String userLogin, final OnUserLoaderCompleted<GitHubUserDetails> listener) {
+        Call<GitHubUserDetails> call = apiInterface.getUserDescription(userLogin);
+        call.enqueue(new Callback<GitHubUserDetails>() {
             @Override
-            public void onResponse(Call<GitHubUserDescription> call, Response<GitHubUserDescription> response) {
-                GitHubUserDescription resource = response.body();
+            public void onResponse(Call<GitHubUserDetails> call, Response<GitHubUserDetails> response) {
+                GitHubUserDetails resource = response.body();
                 listener.onUserLoaderCompleted(resource);
             }
 
             @Override
-            public void onFailure(Call<GitHubUserDescription> call, Throwable t) {
+            public void onFailure(Call<GitHubUserDetails> call, Throwable t) {
                 call.cancel();
             }
         });

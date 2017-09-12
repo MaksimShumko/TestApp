@@ -2,12 +2,12 @@ package com.example.maksim.testapp.list.model;
 
 import com.example.maksim.testapp.list.model.repository.LocalGetAllUsers;
 import com.example.maksim.testapp.list.model.repository.LocalInsertUsers;
-import com.example.maksim.testapp.list.model.repository.LocalRepositoryListener;
+import com.example.maksim.testapp.list.model.repository.LocalListRepositoryListener;
 import com.example.maksim.testapp.list.presenter.ModelListener;
-import com.example.maksim.testapp.room.GitHubUserDao;
-import com.example.maksim.testapp.room.RoomSqlDatabase;
-import com.example.maksim.testapp.list.data.GitHubUser;
-import com.example.maksim.testapp.list.data.GitHubUsers;
+import com.example.maksim.testapp.github_api.room.GitHubUserDao;
+import com.example.maksim.testapp.github_api.room.RoomSqlDatabase;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
+import com.example.maksim.testapp.list.model.data.GitHubUsers;
 import com.example.maksim.testapp.github_api.ExecuteRequest;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  * Created by Maksim on 2017-07-10.
  */
 
-public class ListModel implements LocalRepositoryListener {
+public class ListModel implements LocalListRepositoryListener {
     private ModelListener modelListener;
     private GitHubUserDao gitHubUserDao;
     private String prefSearchQuery;

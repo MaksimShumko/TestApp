@@ -2,8 +2,8 @@ package com.example.maksim.testapp.list.model.repository;
 
 import android.os.AsyncTask;
 
-import com.example.maksim.testapp.list.data.GitHubUser;
-import com.example.maksim.testapp.room.GitHubUserDao;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
+import com.example.maksim.testapp.github_api.room.GitHubUserDao;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import java.util.List;
 
 public class LocalGetAllUsers extends AsyncTask<String, Void, List<GitHubUser>> {
     private GitHubUserDao gitHubUserDao;
-    private LocalRepositoryListener listener;
+    private LocalListRepositoryListener listener;
 
-    public LocalGetAllUsers(LocalRepositoryListener listener, GitHubUserDao gitHubUserDao) {
+    public LocalGetAllUsers(LocalListRepositoryListener listener, GitHubUserDao gitHubUserDao) {
         this.listener = listener;
         this.gitHubUserDao = gitHubUserDao;
     }

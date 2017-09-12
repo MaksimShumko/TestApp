@@ -1,8 +1,8 @@
 package com.example.maksim.testapp.github_api;
 
-import com.example.maksim.testapp.details.models.GitHubUserDescription;
-import com.example.maksim.testapp.list.data.GitHubUser;
-import com.example.maksim.testapp.list.data.GitHubUsers;
+import com.example.maksim.testapp.details.model.data.GitHubUserDetails;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
+import com.example.maksim.testapp.list.model.data.GitHubUsers;
 
 import java.util.List;
 
@@ -23,5 +23,5 @@ public interface ApiInterface {
     Call<List<GitHubUser>> getUsers();
 
     @GET("/users/{userLogin}")
-    Call<GitHubUserDescription> getUserDescription(@Path("userLogin") String userLogin);
+    Call<GitHubUserDetails> getUserDescription(@Path("userLogin") String userLogin);
 }

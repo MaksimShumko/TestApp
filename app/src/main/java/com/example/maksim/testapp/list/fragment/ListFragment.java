@@ -11,17 +11,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.list.presenter.ListViewPresenter;
 import com.example.maksim.testapp.list.presenter.ListViewPresenterInterface;
-import com.example.maksim.testapp.room.RoomSqlDatabase;
+import com.example.maksim.testapp.github_api.room.RoomSqlDatabase;
 import com.example.maksim.testapp.list.adapter.RecyclerViewAdapter;
-import com.example.maksim.testapp.list.data.GitHubUser;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
 
 import java.util.List;
 

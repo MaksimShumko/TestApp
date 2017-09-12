@@ -2,8 +2,8 @@ package com.example.maksim.testapp.list.model.repository;
 
 import android.os.AsyncTask;
 
-import com.example.maksim.testapp.list.data.GitHubUser;
-import com.example.maksim.testapp.room.GitHubUserDao;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
+import com.example.maksim.testapp.github_api.room.GitHubUserDao;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class LocalInsertUsers extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... commands) {
-        gitHubUserDao.deleteAll();
+        gitHubUserDao.deleteUserList();
         gitHubUserDao.insertUsers(gitHubUsers);
         return null;
     }

@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.list.data;
+package com.example.maksim.testapp.list.model.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Maksim on 2017-09-10.
  */
 
-@Entity(tableName = "GitHubUser")
+@Entity
 public class GitHubUser {
     @SerializedName("login")
     @Expose
