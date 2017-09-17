@@ -6,4 +6,7 @@
     <string name="menu_title_details">Details</string>
     <string name="menu_title_list_and_details">List &amp; details</string>
     <string name="edit_dialog_title">Set query</string>
+    <string name="user_name">Name</string>
+    <string name="user_login">Login</string>
+    <string name="user_bio">Bio</string>
 </resources>

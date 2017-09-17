@@ -3,7 +3,7 @@ package com.example.maksim.testapp.list.presenter;
 import com.example.maksim.testapp.list.model.data.GitHubUser;
 import com.example.maksim.testapp.list.fragment.ListViewInterface;
 import com.example.maksim.testapp.list.model.ListModel;
-import com.example.maksim.testapp.github_api.room.RoomSqlDatabase;
+import com.example.maksim.testapp.githubapi.room.RoomSqlDatabase;
 
 import java.util.List;
 

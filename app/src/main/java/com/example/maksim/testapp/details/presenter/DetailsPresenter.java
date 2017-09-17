@@ -3,7 +3,7 @@ package com.example.maksim.testapp.details.presenter;
 import com.example.maksim.testapp.details.fragment.DetailsViewInterface;
 import com.example.maksim.testapp.details.model.data.GitHubUserDetails;
 import com.example.maksim.testapp.details.model.DetailsModel;
-import com.example.maksim.testapp.github_api.room.RoomSqlDatabase;
+import com.example.maksim.testapp.githubapi.room.RoomSqlDatabase;
 
 /**
  * Created by Maksim on 2017-07-16.

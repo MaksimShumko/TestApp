@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.github_api;
+package com.example.maksim.testapp.githubapi;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

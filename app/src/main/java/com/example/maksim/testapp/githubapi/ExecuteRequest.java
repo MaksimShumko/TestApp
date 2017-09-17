@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.github_api;
+package com.example.maksim.testapp.githubapi;
 
 import com.example.maksim.testapp.details.model.data.GitHubUserDetails;
 import com.example.maksim.testapp.list.model.data.GitHubUser;

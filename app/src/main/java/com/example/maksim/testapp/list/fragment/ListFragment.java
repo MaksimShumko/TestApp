@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.list.presenter.ListViewPresenter;
 import com.example.maksim.testapp.list.presenter.ListViewPresenterInterface;
-import com.example.maksim.testapp.github_api.room.RoomSqlDatabase;
+import com.example.maksim.testapp.githubapi.room.RoomSqlDatabase;
 import com.example.maksim.testapp.list.adapter.RecyclerViewAdapter;
 import com.example.maksim.testapp.list.model.data.GitHubUser;
 

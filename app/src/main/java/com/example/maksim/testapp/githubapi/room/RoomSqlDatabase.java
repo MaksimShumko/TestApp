@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.github_api.room;
+package com.example.maksim.testapp.githubapi.room;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;

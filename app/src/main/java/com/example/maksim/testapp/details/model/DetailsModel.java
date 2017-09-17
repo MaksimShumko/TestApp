@@ -5,9 +5,9 @@ import com.example.maksim.testapp.details.model.repository.LocalInsertUserDetail
 import com.example.maksim.testapp.details.model.repository.LocalDetailsRepositoryListener;
 import com.example.maksim.testapp.details.presenter.DetailsModelListener;
 import com.example.maksim.testapp.details.model.data.GitHubUserDetails;
-import com.example.maksim.testapp.github_api.ExecuteRequest;
-import com.example.maksim.testapp.github_api.room.GitHubUserDetailsDao;
-import com.example.maksim.testapp.github_api.room.RoomSqlDatabase;
+import com.example.maksim.testapp.githubapi.ExecuteRequest;
+import com.example.maksim.testapp.githubapi.room.GitHubUserDetailsDao;
+import com.example.maksim.testapp.githubapi.room.RoomSqlDatabase;
 
 /**
  * Created by Maksim on 2017-08-30.

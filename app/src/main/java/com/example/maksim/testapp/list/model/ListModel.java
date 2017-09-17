@@ -4,11 +4,11 @@ import com.example.maksim.testapp.list.model.repository.LocalGetAllUsers;
 import com.example.maksim.testapp.list.model.repository.LocalInsertUsers;
 import com.example.maksim.testapp.list.model.repository.LocalListRepositoryListener;
 import com.example.maksim.testapp.list.presenter.ModelListener;
-import com.example.maksim.testapp.github_api.room.GitHubUserDao;
-import com.example.maksim.testapp.github_api.room.RoomSqlDatabase;
+import com.example.maksim.testapp.githubapi.room.GitHubUserDao;
+import com.example.maksim.testapp.githubapi.room.RoomSqlDatabase;
 import com.example.maksim.testapp.list.model.data.GitHubUser;
 import com.example.maksim.testapp.list.model.data.GitHubUsers;
-import com.example.maksim.testapp.github_api.ExecuteRequest;
+import com.example.maksim.testapp.githubapi.ExecuteRequest;
 
 import java.util.List;
 

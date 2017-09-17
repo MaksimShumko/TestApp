@@ -3,7 +3,7 @@ package com.example.maksim.testapp.details.model.repository;
 import android.os.AsyncTask;
 
 import com.example.maksim.testapp.details.model.data.GitHubUserDetails;
-import com.example.maksim.testapp.github_api.room.GitHubUserDetailsDao;
+import com.example.maksim.testapp.githubapi.room.GitHubUserDetailsDao;
 
 /**
  * Created by Maksim on 2017-09-10.
