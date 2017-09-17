@@ -9,5 +9,6 @@ import java.util.List;
  */
 
 public interface ModelListener {
-    void onResponse(List<GitHubUser> user);
+    void onResponse(List<GitHubUser> user, boolean addElements);
+    boolean isNetworkAvailable();
 }

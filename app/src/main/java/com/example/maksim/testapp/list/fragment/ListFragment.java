@@ -13,13 +13,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.list.presenter.ListViewPresenter;
 import com.example.maksim.testapp.list.presenter.ListViewPresenterInterface;
 import com.example.maksim.testapp.githubapi.room.RoomSqlDatabase;
-import com.example.maksim.testapp.list.adapter.RecyclerViewAdapter;
+import com.example.maksim.testapp.list.fragment.adapter.RecyclerViewAdapter;
 import com.example.maksim.testapp.list.model.data.GitHubUser;
+import com.example.maksim.testapp.utils.InternetUtils;
 
 import java.util.List;
 
@@ -66,7 +68,7 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
         recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new RecyclerViewAdapter(getActivity(), this);
+        adapter = new RecyclerViewAdapter(getActivity(), this, presenter);
         recyclerView.setAdapter(adapter);
         return view;
     }
@@ -107,8 +109,11 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
     }
 
     @Override
-    public void onDataChanged(List<GitHubUser> gitHubUser) {
-        adapter.updateElements(gitHubUser);
+    public void onDataChanged(List<GitHubUser> gitHubUser, boolean addElements) {
+        if (addElements)
+            adapter.addElements(gitHubUser);
+        else
+            adapter.updateElements(gitHubUser);
         adapter.notifyDataSetChanged();
         if (gitHubUser != null && gitHubUser.size() > 0)
             onListFragmentInteractionListener.setFirstElementOfList(gitHubUser.get(0).login);
@@ -122,6 +127,17 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
         SharedPreferences prefs = getActivity()
                 .getSharedPreferences(PREFERENCE_SEARCH_QUERY, MODE_PRIVATE);
         return prefs.getString(SEARCH_QUERY, null);
+    }
+
+    @Override
+    public boolean isNetworkAvailable() {
+        return InternetUtils.isNetworkAvailable(getActivity());
+    }
+
+    @Override
+    public void showNetworkErrorToast() {
+        Toast.makeText(getActivity(), getActivity().getString(R.string.network_not_available),
+                Toast.LENGTH_LONG).show();
     }
 
     @Override

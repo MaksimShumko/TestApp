@@ -20,8 +20,8 @@ public class ExecuteRequest {
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
     }
 
-    public void searchUsers(String userName, final OnUserLoaderCompleted<GitHubUsers> listener) {
-        Call<GitHubUsers> call = apiInterface.searchUsers(userName);
+    public void searchUsers(String userName, int page, final OnUserLoaderCompleted<GitHubUsers> listener) {
+        Call<GitHubUsers> call = apiInterface.searchUsersPagination(userName, page);
         call.enqueue(new Callback<GitHubUsers>() {
             @Override
             public void onResponse(Call<GitHubUsers> call, Response<GitHubUsers> response) {

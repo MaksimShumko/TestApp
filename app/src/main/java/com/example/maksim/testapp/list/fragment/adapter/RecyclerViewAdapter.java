@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.list.adapter;
+package com.example.maksim.testapp.list.fragment.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -11,24 +11,33 @@ import android.widget.TextView;
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.list.model.data.GitHubUser;
 import com.example.maksim.testapp.list.fragment.OnItemClickListener;
+import com.example.maksim.testapp.list.presenter.ListViewPresenterInterface;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private final String LOG_TAG = "RecyclerViewAdapter";
-    private List<GitHubUser> elements;
+    private List<GitHubUser> elements = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
     private Context context;
+    private ListViewPresenterInterface presenter;
 
-    public RecyclerViewAdapter(Context context, OnItemClickListener onItemClickListener) {
+    public RecyclerViewAdapter(Context context, OnItemClickListener onItemClickListener,
+                               ListViewPresenterInterface presenter) {
         //Log.e(LOG_TAG, "RecyclerViewAdapter");
         this.context = context;
         this.onItemClickListener = onItemClickListener;
+        this.presenter = presenter;
     }
 
     public void updateElements(List<GitHubUser> elements) {
         this.elements = elements;
+    }
+
+    public void addElements(List<GitHubUser> elements) {
+        this.elements.addAll(elements);
     }
 
     @Override
@@ -57,6 +66,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         onItemClickListener.onItemClick(element.login);
                 }
             });
+
+            if (position == getItemCount() - 1)
+                presenter.isLastElement();
         }
     }
 

@@ -9,21 +9,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.maksim.testapp.R;
-import com.example.maksim.testapp.details.adapter.DetailsAdapter;
+import com.example.maksim.testapp.details.fragment.adapter.DetailsAdapter;
 import com.example.maksim.testapp.details.presenter.DetailsViewPresenterInterface;
 import com.example.maksim.testapp.details.model.data.GitHubUserDetails;
 import com.example.maksim.testapp.details.presenter.DetailsPresenter;
 import com.example.maksim.testapp.githubapi.room.RoomSqlDatabase;
-import com.example.maksim.testapp.list.adapter.RecyclerViewAdapter;
 
 public class DetailsFragment extends Fragment implements DetailsViewInterface {
     public static final String SELECTED_MODEL = "SELECTED_MODEL";
-    private TextView textView;
     private String userLogin;
-    private GitHubUserDetails gitHubUserDetails;
     private DetailsViewPresenterInterface presenter;
     private DetailsAdapter adapter;
     private RecyclerView recyclerView;
@@ -58,7 +54,6 @@ public class DetailsFragment extends Fragment implements DetailsViewInterface {
 
     @Override
     public void updateView(GitHubUserDetails gitHubUserDetails) {
-        this.gitHubUserDetails = gitHubUserDetails;
         if (gitHubUserDetails != null) {
             adapter.updateElements(gitHubUserDetails);
             adapter.notifyDataSetChanged();
@@ -78,7 +73,9 @@ public class DetailsFragment extends Fragment implements DetailsViewInterface {
         this.userLogin = userLogin;
         if (presenter != null)
             presenter.onUserChanged();
-        if (textView != null)
-            textView.setText("");
+        if (adapter != null) {
+            adapter.cleanFields();
+            adapter.notifyDataSetChanged();
+        }
     }
 }

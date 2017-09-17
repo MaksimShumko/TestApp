@@ -19,6 +19,9 @@ public interface ApiInterface {
     @GET("/search/users")
     Call<GitHubUsers> searchUsers(@Query("q") String userName);
 
+    @GET("/search/users")
+    Call<GitHubUsers> searchUsersPagination(@Query("q") String userName, @Query("page") int page);
+
     @GET("/users")
     Call<List<GitHubUser>> getUsers();
 

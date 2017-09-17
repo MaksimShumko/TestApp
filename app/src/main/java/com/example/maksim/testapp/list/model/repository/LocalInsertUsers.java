@@ -14,15 +14,18 @@ import java.util.List;
 public class LocalInsertUsers extends AsyncTask<String, Void, Void> {
     private List<GitHubUser> gitHubUsers;
     private GitHubUserDao gitHubUserDao;
+    private boolean addElements;
 
-    public LocalInsertUsers(List<GitHubUser> gitHubUsers, GitHubUserDao gitHubUserDao) {
+    public LocalInsertUsers(List<GitHubUser> gitHubUsers, GitHubUserDao gitHubUserDao, boolean addElements) {
         this.gitHubUsers = gitHubUsers;
         this.gitHubUserDao = gitHubUserDao;
+        this.addElements = addElements;
     }
 
     @Override
     protected Void doInBackground(String... commands) {
-        gitHubUserDao.deleteUserList();
+        if (!addElements)
+            gitHubUserDao.deleteUserList();
         gitHubUserDao.insertUsers(gitHubUsers);
         return null;
     }

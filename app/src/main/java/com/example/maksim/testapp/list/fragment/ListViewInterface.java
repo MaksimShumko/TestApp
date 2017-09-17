@@ -9,6 +9,8 @@ import java.util.List;
  */
 
 public interface ListViewInterface {
-    void onDataChanged(List<GitHubUser> gitHubUser);
+    void onDataChanged(List<GitHubUser> gitHubUser, boolean addElements);
     String getPrefSearchQuery();
+    boolean isNetworkAvailable();
+    void showNetworkErrorToast();
 }

@@ -1,9 +1,9 @@
 package com.example.maksim.testapp.list.presenter;
 
-import com.example.maksim.testapp.list.model.data.GitHubUser;
+import com.example.maksim.testapp.githubapi.room.RoomSqlDatabase;
 import com.example.maksim.testapp.list.fragment.ListViewInterface;
 import com.example.maksim.testapp.list.model.ListModel;
-import com.example.maksim.testapp.githubapi.room.RoomSqlDatabase;
+import com.example.maksim.testapp.list.model.data.GitHubUser;
 
 import java.util.List;
 
@@ -23,13 +23,26 @@ public class ListViewPresenter implements ListViewPresenterInterface, ModelListe
 
     @Override
     public void onSearchQueryChanged() {
-        if(model != null) {
+        if(model != null)
             model.executeSearchUsers(view.getPrefSearchQuery());
-        }
     }
 
     @Override
-    public void onResponse(List<GitHubUser> gitHubUser) {
-        view.onDataChanged(gitHubUser);
+    public void isLastElement() {
+        if(model != null)
+            model.executeGetNextPage(view.getPrefSearchQuery());
+    }
+
+    @Override
+    public void onResponse(List<GitHubUser> gitHubUser, boolean addElements) {
+        view.onDataChanged(gitHubUser, addElements);
+    }
+
+    @Override
+    public boolean isNetworkAvailable() {
+        boolean isNetworkAvailable = view.isNetworkAvailable();
+        if (!isNetworkAvailable)
+            view.showNetworkErrorToast();
+        return isNetworkAvailable;
     }
 }

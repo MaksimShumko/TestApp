@@ -1,4 +1,4 @@
-package com.example.maksim.testapp.details.adapter;
+package com.example.maksim.testapp.details.fragment.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -82,6 +82,10 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
             this.title = title;
             this.value = value;
         }
+    }
+
+    public void cleanFields() {
+        elements = null;
     }
 }
 

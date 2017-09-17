@@ -17,9 +17,12 @@ import java.util.List;
  */
 
 public class ListModel implements LocalListRepositoryListener {
+    private final int countOfElementsOnPage = 30;
     private ModelListener modelListener;
     private GitHubUserDao gitHubUserDao;
     private String prefSearchQuery;
+    private int totalCountOfElements;
+    private int currentPage;
 
     public ListModel(ModelListener modelListener, RoomSqlDatabase roomSqlDatabase, String prefSearchQuery) {
         this.modelListener = modelListener;
@@ -30,22 +33,36 @@ public class ListModel implements LocalListRepositoryListener {
     }
 
     public void executeSearchUsers(String searchQuery) {
-        if (searchQuery != null && !searchQuery.isEmpty())
-            new ExecuteRequest().searchUsers(searchQuery, gitHubUsersListener);
-        else
-            new ExecuteRequest().getUsers(listOfUsersListener);
+        if (modelListener.isNetworkAvailable()) {
+            currentPage = 1;
+            if (searchQuery != null && !searchQuery.isEmpty())
+                new ExecuteRequest().searchUsers(searchQuery, currentPage, gitHubUsersListener);
+            else
+                new ExecuteRequest().getUsers(listOfUsersListener);
+        }
     }
 
-    private void onUserLoaderCompleted(List<GitHubUser> gitHubUsers) {
-        new LocalInsertUsers(gitHubUsers, gitHubUserDao).execute();
-        modelListener.onResponse(gitHubUsers);
+    public void executeGetNextPage(String searchQuery) {
+        if (modelListener.isNetworkAvailable())
+            if (currentPage * countOfElementsOnPage <= totalCountOfElements)
+                if (searchQuery != null && !searchQuery.isEmpty())
+                    new ExecuteRequest().searchUsers(searchQuery, ++currentPage, gitHubUsersListener);
+    }
+
+    private void onUserLoaderCompleted(List<GitHubUser> gitHubUsers, boolean addElements) {
+        new LocalInsertUsers(gitHubUsers, gitHubUserDao, addElements).execute();
+        modelListener.onResponse(gitHubUsers, addElements);
     }
 
     private ExecuteRequest.OnUserLoaderCompleted<GitHubUsers> gitHubUsersListener =
             new ExecuteRequest.OnUserLoaderCompleted<GitHubUsers>() {
                 @Override
                 public void onUserLoaderCompleted(GitHubUsers gitHubUsers) {
-                    ListModel.this.onUserLoaderCompleted(gitHubUsers.items);
+                    if (gitHubUsers != null) {
+                        if (gitHubUsers.totalCount != null)
+                            totalCountOfElements = gitHubUsers.totalCount;
+                        ListModel.this.onUserLoaderCompleted(gitHubUsers.items, currentPage != 1);
+                    }
                 }
             };
 
@@ -53,7 +70,7 @@ public class ListModel implements LocalListRepositoryListener {
             new ExecuteRequest.OnUserLoaderCompleted<List<GitHubUser>>() {
                 @Override
                 public void onUserLoaderCompleted(List<GitHubUser> gitHubUsers) {
-                    ListModel.this.onUserLoaderCompleted(gitHubUsers);
+                    ListModel.this.onUserLoaderCompleted(gitHubUsers, false);
                 }
             };
 
@@ -62,6 +79,6 @@ public class ListModel implements LocalListRepositoryListener {
         if (users == null || users.size() <= 0)
             executeSearchUsers(prefSearchQuery);
         else
-            modelListener.onResponse(users);
+            modelListener.onResponse(users, false);
     }
 }
