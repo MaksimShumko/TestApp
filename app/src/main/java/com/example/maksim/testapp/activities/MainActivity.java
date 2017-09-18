@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity
         DetailsFragment detailsFragment = (DetailsFragment) fragmentManager
                 .findFragmentById(R.id.detailsFragment);
         if (detailsFragment != null && isLandTablet)
-            detailsFragment.updateContent(userLogin);
+            detailsFragment.updateContentIfViewIsEmpty(userLogin);
     }
 
     private void onItemSelected(String userLogin) {

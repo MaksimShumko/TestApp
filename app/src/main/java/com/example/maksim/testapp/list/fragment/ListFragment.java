@@ -116,7 +116,7 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
             adapter.updateElements(gitHubUser);
         adapter.notifyDataSetChanged();
 
-        if (gitHubUser != null && gitHubUser.size() > 0 && !addElements)
+        if (gitHubUser != null && gitHubUser.size() > 0)
             onListFragmentInteractionListener.setFirstElementOfList(gitHubUser.get(0).login);
 
         if (addElements)

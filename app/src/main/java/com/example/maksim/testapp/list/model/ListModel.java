@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 public class ListModel implements LocalListRepositoryListener {
-    private final int countOfElementsOnPage = 30;
+    public static final int COUNT_OF_ELEMENTS_ON_PAGE = 30;
     private ModelListener modelListener;
     private GitHubUserDao gitHubUserDao;
     private String prefSearchQuery;
@@ -44,7 +44,7 @@ public class ListModel implements LocalListRepositoryListener {
 
     public void executeGetNextPage(String searchQuery) {
         if (modelListener.isNetworkAvailable())
-            if (currentPage * countOfElementsOnPage <= totalCountOfElements)
+            if (currentPage * COUNT_OF_ELEMENTS_ON_PAGE <= totalCountOfElements)
                 if (searchQuery != null && !searchQuery.isEmpty())
                     new ExecuteRequest().searchUsers(searchQuery, ++currentPage, gitHubUsersListener);
     }

@@ -78,4 +78,9 @@ public class DetailsFragment extends Fragment implements DetailsViewInterface {
             adapter.notifyDataSetChanged();
         }
     }
+
+    public void updateContentIfViewIsEmpty(String userLogin) {
+        if (adapter != null && this.userLogin == null)
+            updateContent(userLogin);
+    }
 }
