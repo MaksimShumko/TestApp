@@ -86,9 +86,9 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         Parcelable savedRecyclerLayoutState = getSavedRecyclerLayoutState();
         outState.putParcelable(RECYCLER_LAYOUT_STATE, savedRecyclerLayoutState);
+        super.onSaveInstanceState(outState);
     }
 
     public Parcelable getSavedRecyclerLayoutState() {
@@ -115,11 +115,14 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
         else
             adapter.updateElements(gitHubUser);
         adapter.notifyDataSetChanged();
-        if (gitHubUser != null && gitHubUser.size() > 0)
+
+        if (gitHubUser != null && gitHubUser.size() > 0 && !addElements)
             onListFragmentInteractionListener.setFirstElementOfList(gitHubUser.get(0).login);
+
+        if (addElements)
+            savedRecyclerLayoutState = null;
         if(savedRecyclerLayoutState != null && recyclerView != null)
             recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-
     }
 
     @Override

@@ -22,7 +22,7 @@ public class ListModel implements LocalListRepositoryListener {
     private GitHubUserDao gitHubUserDao;
     private String prefSearchQuery;
     private int totalCountOfElements;
-    private int currentPage;
+    private static int currentPage;
 
     public ListModel(ModelListener modelListener, RoomSqlDatabase roomSqlDatabase, String prefSearchQuery) {
         this.modelListener = modelListener;
