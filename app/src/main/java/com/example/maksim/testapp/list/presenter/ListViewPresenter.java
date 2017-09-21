@@ -18,23 +18,23 @@ public class ListViewPresenter implements ListViewPresenterInterface, ModelListe
 
     public ListViewPresenter(ListViewInterface view, RoomSqlDatabase roomSqlDatabase) {
         this.view = view;
-        model = new ListModel(this, roomSqlDatabase, view.getPrefSearchQuery());
         view.startSwipeRefresh();
+        model = new ListModel(this, roomSqlDatabase, view.getPrefSearchQuery());
     }
 
     @Override
     public void onSearchQueryChanged() {
         if(model != null) {
-            model.executeSearchUsers(view.getPrefSearchQuery());
             view.startSwipeRefresh();
+            model.executeSearchUsers(view.getPrefSearchQuery());
         }
     }
 
     @Override
     public void isLastElement() {
         if(model != null) {
-            model.executeGetNextPage(view.getPrefSearchQuery());
             view.startSwipeRefresh();
+            model.executeGetNextPage(view.getPrefSearchQuery());
         }
     }
 
@@ -53,8 +53,10 @@ public class ListViewPresenter implements ListViewPresenterInterface, ModelListe
     @Override
     public boolean isNetworkAvailable() {
         boolean isNetworkAvailable = view.isNetworkAvailable();
-        if (!isNetworkAvailable)
+        if (!isNetworkAvailable) {
             view.showNetworkErrorToast();
+            view.stopSwipeRefresh();
+        }
         return isNetworkAvailable;
     }
 

@@ -44,9 +44,11 @@ public class ListModel implements LocalListRepositoryListener {
 
     public void executeGetNextPage(String searchQuery) {
         if (modelListener.isNetworkAvailable())
-            if (currentPage * COUNT_OF_ELEMENTS_ON_PAGE <= totalCountOfElements)
-                if (searchQuery != null && !searchQuery.isEmpty())
-                    new ExecuteRequest().searchUsers(searchQuery, ++currentPage, gitHubUsersListener);
+            if ((currentPage * COUNT_OF_ELEMENTS_ON_PAGE <= totalCountOfElements)
+                    && (searchQuery != null && !searchQuery.isEmpty()) )
+                new ExecuteRequest().searchUsers(searchQuery, ++currentPage, gitHubUsersListener);
+            else
+                onFailureRequest("Where is no more pages");
     }
 
     private void onUserLoaderCompleted(List<GitHubUser> gitHubUsers, boolean addElements) {

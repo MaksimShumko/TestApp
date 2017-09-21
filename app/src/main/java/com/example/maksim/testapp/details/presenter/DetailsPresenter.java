@@ -15,8 +15,8 @@ public class DetailsPresenter implements DetailsViewPresenterInterface, DetailsM
 
     public DetailsPresenter(DetailsViewInterface view, RoomSqlDatabase roomSqlDatabase) {
         this.view = view;
-        model = new DetailsModel(this, roomSqlDatabase, view.getSelectedUserLogin());
         view.startSwipeRefresh();
+        model = new DetailsModel(this, roomSqlDatabase, view.getSelectedUserLogin());
     }
 
     @Override
@@ -36,8 +36,8 @@ public class DetailsPresenter implements DetailsViewPresenterInterface, DetailsM
     @Override
     public void onUserChanged() {
         if(model != null && view != null) {
-            model.loadUserDetails(view.getSelectedUserLogin());
             view.startSwipeRefresh();
+            model.loadUserDetails(view.getSelectedUserLogin());
         }
     }
 }
