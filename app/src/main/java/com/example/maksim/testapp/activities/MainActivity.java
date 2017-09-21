@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isLandTablet;
     private String savedGitHubUserData;
     private Parcelable savedRecyclerLayoutState;
+    private MenuItem menuSearchUsers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +156,8 @@ public class MainActivity extends AppCompatActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
 
+        menuSearchUsers = menu.findItem(R.id.menu_search_users);
+
         if(!isLandTablet) {
             setMenuBackButton();
         }
@@ -169,7 +172,7 @@ public class MainActivity extends AppCompatActivity
                     fragmentManager.popBackStack();
                 }
                 break;
-            case R.id.menu_edit_query:
+            case R.id.menu_search_users:
                 showEditQueryDialog();
                 break;
             default:
@@ -211,11 +214,18 @@ public class MainActivity extends AppCompatActivity
         editor.putString(ListFragment.SEARCH_QUERY, searchQuery);
         editor.apply();
 
-        ListFragment listFragment = (ListFragment) fragmentManager
-                .findFragmentById(R.id.listFragment);
-        if (listFragment == null) {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
+        }
+
+        ListFragment listFragment = null;
+        if (!isLandTablet) {
+            Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
+            if (fragment != null && fragment instanceof ListFragment)
+                listFragment = (ListFragment) fragment;
+        } else {
             listFragment = (ListFragment) fragmentManager
-                    .findFragmentById(R.id.fragmentContainer);
+                    .findFragmentById(R.id.listFragment);
         }
 
         if (listFragment != null)
