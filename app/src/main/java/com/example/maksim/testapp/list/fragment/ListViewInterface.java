@@ -13,4 +13,7 @@ public interface ListViewInterface {
     String getPrefSearchQuery();
     boolean isNetworkAvailable();
     void showNetworkErrorToast();
+    void showRequestErrorToast(String message);
+    void startSwipeRefresh();
+    void stopSwipeRefresh();
 }

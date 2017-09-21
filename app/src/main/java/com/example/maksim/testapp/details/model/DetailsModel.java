@@ -45,6 +45,11 @@ public class DetailsModel implements ExecuteRequest.OnUserLoaderCompleted<GitHub
     }
 
     @Override
+    public void onFailure(String message) {
+        listener.onFailureRequest(message);
+    }
+
+    @Override
     public void onUserDetailsLoaded(GitHubUserDetails userDetails) {
         if (userDetails == null)
             executeGetUserDescription(userLogin);

@@ -9,4 +9,7 @@ import com.example.maksim.testapp.details.model.data.GitHubUserDetails;
 public interface DetailsViewInterface {
     void updateView(GitHubUserDetails gitHubUserDetails);
     String getSelectedUserLogin();
+    void showRequestErrorToast(String message);
+    void startSwipeRefresh();
+    void stopSwipeRefresh();
 }

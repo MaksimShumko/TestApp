@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +40,7 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
     private OnListFragmentInteractionListener onListFragmentInteractionListener;
     private RecyclerView recyclerView;
     private Parcelable savedRecyclerLayoutState;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public ListFragment() {
         Log.e(LOG, "ListFragment");
@@ -48,10 +50,6 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
     public void onCreate(Bundle savedInstanceState) {
         Log.e(LOG, "onCreate");
         super.onCreate(savedInstanceState);
-
-        RoomSqlDatabase roomSqlDatabase = Room.databaseBuilder(getActivity(),
-                RoomSqlDatabase.class, RoomSqlDatabase.DATABASE_NAME_GIT_HUB).build();
-        presenter = new ListViewPresenter(this, roomSqlDatabase);
 
         Bundle bundle = getArguments();
         if(bundle != null)
@@ -65,9 +63,21 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
                              Bundle savedInstanceState) {
         Log.e(LOG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        recyclerView = (RecyclerView) view;
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.onSwipeRefresh();
+            }
+        });
+
+        RoomSqlDatabase roomSqlDatabase = Room.databaseBuilder(getActivity(),
+                RoomSqlDatabase.class, RoomSqlDatabase.DATABASE_NAME_GIT_HUB).build();
+        presenter = new ListViewPresenter(this, roomSqlDatabase);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
         adapter = new RecyclerViewAdapter(getActivity(), this, presenter);
         recyclerView.setAdapter(adapter);
         return view;
@@ -141,6 +151,21 @@ public class ListFragment extends Fragment implements ListViewInterface, OnItemC
     public void showNetworkErrorToast() {
         Toast.makeText(getActivity(), getActivity().getString(R.string.network_not_available),
                 Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showRequestErrorToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void startSwipeRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void stopSwipeRefresh() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

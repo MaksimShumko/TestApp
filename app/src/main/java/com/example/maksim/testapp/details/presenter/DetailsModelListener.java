@@ -8,4 +8,5 @@ import com.example.maksim.testapp.details.model.data.GitHubUserDetails;
 
 public interface DetailsModelListener {
     void onResponse(GitHubUserDetails userDetails);
+    void onFailureRequest(String message);
 }

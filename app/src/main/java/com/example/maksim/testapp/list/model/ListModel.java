@@ -64,6 +64,11 @@ public class ListModel implements LocalListRepositoryListener {
                         ListModel.this.onUserLoaderCompleted(gitHubUsers.items, currentPage != 1);
                     }
                 }
+
+                @Override
+                public void onFailure(String message) {
+                    onFailureRequest(message);
+                }
             };
 
     private ExecuteRequest.OnUserLoaderCompleted<List<GitHubUser>> listOfUsersListener =
@@ -72,7 +77,16 @@ public class ListModel implements LocalListRepositoryListener {
                 public void onUserLoaderCompleted(List<GitHubUser> gitHubUsers) {
                     ListModel.this.onUserLoaderCompleted(gitHubUsers, false);
                 }
+
+                @Override
+                public void onFailure(String message) {
+                    onFailureRequest(message);
+                }
             };
+
+    private void onFailureRequest(String message) {
+        modelListener.onFailureRequest(message);
+    }
 
     @Override
     public void onUsersLoaded(List<GitHubUser> users) {

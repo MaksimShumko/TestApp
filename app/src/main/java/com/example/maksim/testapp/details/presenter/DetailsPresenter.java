@@ -16,17 +16,28 @@ public class DetailsPresenter implements DetailsViewPresenterInterface, DetailsM
     public DetailsPresenter(DetailsViewInterface view, RoomSqlDatabase roomSqlDatabase) {
         this.view = view;
         model = new DetailsModel(this, roomSqlDatabase, view.getSelectedUserLogin());
+        view.startSwipeRefresh();
     }
 
     @Override
     public void onResponse(GitHubUserDetails userDetails) {
-        if(view != null)
+        if(view != null) {
             view.updateView(userDetails);
+            view.stopSwipeRefresh();
+        }
+    }
+
+    @Override
+    public void onFailureRequest(String message) {
+        view.showRequestErrorToast(message);
+        view.stopSwipeRefresh();
     }
 
     @Override
     public void onUserChanged() {
-        if(model != null && view != null)
+        if(model != null && view != null) {
             model.loadUserDetails(view.getSelectedUserLogin());
+            view.startSwipeRefresh();
+        }
     }
 }

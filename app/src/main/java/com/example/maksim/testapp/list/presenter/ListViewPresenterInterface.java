@@ -7,4 +7,5 @@ package com.example.maksim.testapp.list.presenter;
 public interface ListViewPresenterInterface {
     void onSearchQueryChanged();
     void isLastElement();
+    void onSwipeRefresh();
 }

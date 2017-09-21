@@ -3,12 +3,14 @@ package com.example.maksim.testapp.details.fragment;
 import android.app.Fragment;
 import android.arch.persistence.room.Room;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.maksim.testapp.R;
 import com.example.maksim.testapp.details.fragment.adapter.DetailsAdapter;
@@ -23,6 +25,7 @@ public class DetailsFragment extends Fragment implements DetailsViewInterface {
     private DetailsViewPresenterInterface presenter;
     private DetailsAdapter adapter;
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public DetailsFragment() {}
 
@@ -34,17 +37,26 @@ public class DetailsFragment extends Fragment implements DetailsViewInterface {
         if(bundle != null) {
             userLogin = bundle.getString(SELECTED_MODEL);
         }
-
-        RoomSqlDatabase roomSqlDatabase = Room.databaseBuilder(getActivity(),
-                RoomSqlDatabase.class, RoomSqlDatabase.DATABASE_NAME_GIT_HUB).build();
-        presenter = new DetailsPresenter(this, roomSqlDatabase);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
-        recyclerView = (RecyclerView) view;
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateContent(userLogin);
+            }
+        });
+
+        RoomSqlDatabase roomSqlDatabase = Room.databaseBuilder(getActivity(),
+                RoomSqlDatabase.class, RoomSqlDatabase.DATABASE_NAME_GIT_HUB).build();
+        presenter = new DetailsPresenter(this, roomSqlDatabase);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         adapter = new DetailsAdapter(getActivity());
@@ -63,6 +75,21 @@ public class DetailsFragment extends Fragment implements DetailsViewInterface {
     @Override
     public String getSelectedUserLogin() {
         return userLogin;
+    }
+
+    @Override
+    public void showRequestErrorToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void startSwipeRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void stopSwipeRefresh() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     public String getGitHubUser() {
